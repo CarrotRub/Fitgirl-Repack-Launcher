@@ -1,0 +1,35 @@
+{
+  "name": "fitgirl-repack",
+  "version": "0.0.1",
+  "description": "Fitgirl Repack Launcher",
+  "main": "src/public/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "launcher"
+  ],
+  "author": "Carotiide",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "@floating-ui/react-native": "^0.10.1",
+    "axios": "^1.6.7",
+    "browserify": "^17.0.0",
+    "electron": "^27.0.4",
+    "moment": "^2.29.4",
+    "puppeteer": "^21.5.2",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-block-resources": "^2.4.3",
+    "transmission": "^0.4.10",
+    "webtorrent": "^1.9.7",
+    "node-localstorage" : "^3.0.5"
+  },
+  "devDependencies": {
+    "@types/webtorrent": "^0.109.8"
+  },
+  "build": {
+    "win": {
+        "requestedExecutionLevel": "requireAdministrator"
+    }
+}
+}

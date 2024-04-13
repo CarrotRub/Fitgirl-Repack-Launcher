@@ -1,0 +1,15 @@
+
+node_modules/
+*.log
+*.tmp
+.DS_Store
+.vscode/
+.idea/
+*.swp
+.env
+build/
+out/
+*.zip
+*.tar.gz
+*.pem
+*.key

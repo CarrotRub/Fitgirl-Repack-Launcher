@@ -50,6 +50,15 @@ FitGirl Launcher utilizes web scraping with Puppeteer to extract game informatio
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+## Design Help Needed!
+
+We're looking for assistance with the design of FitGirl Launcher! If you have experience with UI/UX design and would like to contribute, please don't hesitate to reach out. Your help would be greatly appreciated.
+I am absolutely dreadful at design.
+
+## Release Information
+
+Please note that there is currently no released executable version of FitGirl Launcher due to the presence of numerous bugs and the need for implementing essential features. We are actively working on improving the application, and a stable release will be made available once these issues have been addressed.
+
 ## License
 
 [GPL-3.0](https://choosealicense.com/licenses/gpl-3.0/)

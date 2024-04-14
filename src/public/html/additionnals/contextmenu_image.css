@@ -1,0 +1,19 @@
+.menu {
+  width: 120px;
+  box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
+  position: relative;
+  display: none;
+}
+.menu .menu-options {
+  list-style: none;
+  padding: 10px 0;
+}
+.menu .menu-options .menu-option {
+  font-weight: 500;
+  font-size: 14px;
+  padding: 10px 40px 10px 20px;
+  cursor: pointer;
+}
+.menu .menu-options .menu-option:hover {
+  background: rgba(0, 0, 0, 0.2);
+}

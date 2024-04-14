@@ -15,3 +15,5 @@ out/
 *.tar.gz
 *.pem
 *.key
+scratch/
+*.xml

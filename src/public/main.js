@@ -1,7 +1,8 @@
 const {
   app,
   BrowserWindow,
-  ipcMain
+  ipcMain,
+  Menu
 } = require('electron')
 const {
   exec
@@ -12,7 +13,11 @@ const fs = require('fs');
 const moment = require('moment');
 const WebTorrent = require('webtorrent');
 const readline = require('readline');
-const { getGamesData } = require("../public/scripts/singlescrap")
+const { getGamesData } = require("../public/scripts/singlescrap");
+const { electron } = require('process');
+const client = new WebTorrent();
+global.client = client;
+global.win;
 
 function prettyBytes(num) {
   const units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -24,6 +29,7 @@ function prettyBytes(num) {
   num = Number((num / Math.pow(1000, exponent)).toFixed(2));
   return (neg ? '-' : '') + num + ' ' + unit;
 }
+
 
 ipcMain.handle('readLinesFromFile', async (event, filePath) => {
   try {
@@ -51,10 +57,20 @@ ipcMain.handle('readLinesFromFile', async (event, filePath) => {
     throw new Error(error);
   }
 });
-
-const client = new WebTorrent();
-global.client = client;
-global.win;
+ipcMain.handle('show-context-menu-game', (event) => {
+  const contextMenuGameTemplate = [
+    {
+      label: 'Place it in Favorites',
+      click: () => { console.log("Went in favorites") }
+    },
+    {
+      label: 'Download',
+      click: () => { console.log("Download started") }
+    },
+  ]
+  const menu = Menu.buildFromTemplate(contextMenuGameTemplate)
+  menu.popup({ window: BrowserWindow.fromWebContents(event.sender) })
+})
 
 ipcMain.handle('executeBridgedFile', (event, filePath) => {
   // Execute the file
@@ -78,7 +94,7 @@ ipcMain.on('startTorrent', (event, torrentId, downloadPath) => {
   setInterval(() => {
     if (torrent) {
       const percent = Math.round(torrent.progress * 100 * 100) / 100;
-        win.webContents.send('updateInfo', {
+        global.win.webContents.send('updateInfo', {
           downloadSpeed: prettyBytes(torrent.downloadSpeed),
           uploadSpeed: prettyBytes(torrent.uploadSpeed),
           progress: percent + "%",
@@ -92,17 +108,16 @@ ipcMain.on('startTorrent', (event, torrentId, downloadPath) => {
         });
         if (torrent.done == true) {
           global.torrent.destroy(() => {
-            win.webContents.send('torrentStopped');
+            global.win.webContents.send('torrentStopped');
           });
         }
     }
   }, 500);
 });
-
 ipcMain.on('stopTorrent', () => {
   if (global.torrent) {
     global.torrent.destroy(() => {
-      win.webContents.send('torrentStopped');
+      global.win.webContents.send('torrentStopped');
     });
   }
 });
@@ -179,6 +194,7 @@ ipcMain.handle('writeFile', (event, filePath, updatedData, encoding) => {
       });
   });
 });
+
 const createWindow = () => {
 
   global.win = new BrowserWindow({
@@ -195,7 +211,7 @@ const createWindow = () => {
       }
   })
 
-  win.loadFile('src\\public\\html\\index.html')
+  global.win.loadFile('src\\public\\html\\index.html')
 }
 
 const runSpecificFile = () => {

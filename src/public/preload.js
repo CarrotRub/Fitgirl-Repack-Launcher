@@ -31,7 +31,7 @@ contextBridge.exposeInMainWorld('torrentAPI', {
   removeListener: (channel, func) => ipcRenderer.removeListener(channel, func)
 });
 
-// Expose IPC handlers to the renderer process
+// Expose primary functions handlers to the renderer process.
 contextBridge.exposeInMainWorld('primaryAPI', {
   executeBridgedFile: (filePath) => {
     try {
@@ -101,3 +101,14 @@ contextBridge.exposeInMainWorld('primaryAPI', {
 
 
 });
+
+// Expose secondary functions handlers to the renderer process.
+contextBridge.exposeInMainWorld('secondaryAPI', {
+  contextMenuGame: () => {
+    try {
+      return ipcRenderer.invoke('show-context-menu-game');
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+})

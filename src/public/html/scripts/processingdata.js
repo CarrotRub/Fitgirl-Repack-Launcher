@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     const {
         torrentAPI,
-        primaryAPI
+        primaryAPI,
+        secondaryAPI
     } = window;
     const dirname = await primaryAPI.getDirname();
 
@@ -20,8 +21,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     var isDownloading = false;
     var ScrapingUrl = getUrlParameter('url');
 
-
-
+    /**
+     * Stop UI update process. 
+     * 
+     * (Usually at the changing of a new window)
+     */
+    function stopUIUpdate() {
+        console.log(intervalId)
+        if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+            
+        }
+    }
     /**
      * Update the UI of game-container to a single game UI.
      * 
@@ -127,6 +139,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.log("should be destroying bbg");
                     torrentAPI.stopTorrent();
                     stopUIUpdate();
+                    
                     downloadButton.textContent = "Download";
 
                     isDownloading = false;
@@ -158,7 +171,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (urlParameter !== '') {
         // If a URL parameter is present, handle the message
         scrapePage(urlParameter);
-        console.log("should")
     }
 
     /**Sets the data of the sending Torrent inside session storage for later purpose and usage by the UI process.
@@ -218,7 +230,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         document.querySelector('#downloaded').innerHTML = `Downloaded : ${downloadedSize}`;
         document.querySelector('#numPeers').innerHTML = `Peers : ${peers}`;
-
         primaryAPI.readFile(dwnldGames)
             .then(async (gameDoneData) => {
                 try {
@@ -232,10 +243,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                     if (isTorrentNameInJSON) {
                         console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
                         stopUIUpdate();
+
                         torrentAPI.stopTorrent();
 
                         await startEXEProcessing();
-                    } else if (isGameDone === 'true') {
+                    } else if (isGameDone == 'true' && !isTorrentNameInJSON) {
                         console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
 
                         stopUIUpdate();
@@ -255,10 +267,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
                 }
-            })
-            .then(() => {
-                console.log('JSON file updated successfully.');
-
             })
             .catch((err) => {
                 console.error('Error reading or writing JSON file:', err);
@@ -285,24 +293,14 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Start "UI of downloading" update process.
      * //SECONDARY// PROCESS.
      */
-    async function startUIDownloadUpdate() {
+    function startUIDownloadUpdate() {
         if (!intervalId) {
-            intervalId = setInterval(updateDownloadUI, 501);
+            intervalId = setInterval(updateDownloadUI, 505);
 
         }
     }
 
-    /**
-     * Stop UI update process. 
-     * 
-     * (Usually at the changing of a new window)
-     */
-    async function stopUIUpdate() {
-        if (intervalId) {
-            clearInterval(intervalId);
-            intervalId = null;
-        }
-    }
+
 
     /**
      * Toggles a path selection window asynchronously.
@@ -349,7 +347,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         updatingTorrent();
                         try {
 
-                            await startUIDownloadUpdate()
+                            startUIDownloadUpdate()
 
                         } catch (error) {
                             throw new Error(error)
@@ -457,6 +455,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         searchInput.value = ''
                         //Place there the changing page.
                     });
+
                     searchResultsElement.appendChild(resultElement);
                 });
                 searchResultsElement.style.display = 'block';
@@ -572,13 +571,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             const returnSlideArrow = document.querySelector('.return-arrow-sld');
             if (torrentedMagnet === magnetlink) {
                 try {
-                    await startUIDownloadUpdate()
+                    startUIDownloadUpdate()
                 } catch (error) {
                     throw new Error(error)
                 }
             } else if (torrentedMagnet !== magnetlink) {
                 try {
-                    await stopUIUpdate()
+                    stopUIUpdate();
+                    
                 } catch (error) {
                     new Error(error)
                 }
@@ -602,6 +602,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 } else if (isDownloading) {
                     console.log("should be destroying bbg");
                     window.torrentAPI.stopTorrent();
+                    stopUIUpdate()
                     downloadButton.textContent = "Download";
 
                     isDownloading = false;
@@ -647,6 +648,13 @@ document.addEventListener('DOMContentLoaded', async function() {
                         blurOverlay.style.top = `-${scrollPosition}px`;
                     });
 
+                    // Added a context menu after right click on an imageOption
+                    imageOption.addEventListener('contextmenu', function(event){
+                        event.preventDefault();
+                        secondaryAPI.contextMenuGame()
+                    })
+                    
+                    // Animation for the game bg
                     imageOption.addEventListener('mouseout', function() {
                         let blurOverlay = fitgirlLauncher.querySelector('.blur-overlay');
                         if (blurOverlay) {
@@ -654,6 +662,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         }
                     });
 
+                    // Game click
                     imageOption.addEventListener('click', function() {
                         console.log("Selected image link: " + link);
 

@@ -13,7 +13,6 @@ var exec = require('child_process').execFile;
 
 // Function to spawn the C++ child process
 function runCppProcess() {
-    // Path to your compiled C++ executable
     const cppExecutable = './app/display_image.exe'; 
 
 

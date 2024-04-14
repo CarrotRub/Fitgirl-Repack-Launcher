@@ -3,7 +3,7 @@ const fs = require('fs')
 
 const saveToJsonFile = (data) => {
   fs.writeFileSync('ftgGamesData.json', JSON.stringify(data, null, 2));
-  console.log('Data saved to ftgGamesData.json, just for you, my lovely Pookie.');
+  console.log('Data saved to ftgGamesData.json, just for you.');
 };
 const getMagnetLinks = async (page) => {
     return await page.evaluate(() => {

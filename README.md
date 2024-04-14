@@ -1,6 +1,6 @@
 # FitGirl Launcher App
 
-![FitGirl Launcher Logo](src/private/icons/fitgirl_icon(256).png)
+![FitGirl Launcher Logo](src/private/icons/fitgirl_icon.png)
 
 FitGirl Launcher is an Electron-based application built using vanilla JavaScript. It provides a platform to download and manage games from FitGirl Repacks.
 
@@ -21,6 +21,16 @@ Once the application is running, you can:
     - Manage settings such as theme, download location, and seeding options (Working on it...).
     - View downloaded games in the library and mark them as favorites (Working on it...).
     - Access the favorites page to see your favorite games (Working on it...).
+
+## Images
+
+Here are some screenshots of the FitGirl Launcher App:
+
+![Screenshot 1](src/private/images/Screenshot1.png)
+![Screenshot 2](src/private/images/Screenshot2.png)
+![Screenshot 3](src/private/images/Screenshot3.png)
+![Screenshot 4](src/private/images/Screenshot4.png)
+![Screenshot 5](src/private/images/Screenshot5.png)
 
 ## Todo List
 
@@ -49,15 +59,6 @@ FitGirl Launcher utilizes web scraping with Puppeteer to extract game informatio
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-## Design Help Needed!
-
-We're looking for assistance with the design of FitGirl Launcher! If you have experience with UI/UX design and would like to contribute, please don't hesitate to reach out. Your help would be greatly appreciated.
-I am absolutely dreadful at design.
-
-## Release Information
-
-Please note that there is currently no released executable version of FitGirl Launcher due to the presence of numerous bugs and the need for implementing essential features. We are actively working on improving the application, and a stable release will be made available once these issues have been addressed.
 
 ## License
 

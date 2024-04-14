@@ -9,7 +9,7 @@
   "keywords": [
     "launcher"
   ],
-  "author": "Carotiide",
+  "author": "CarrotRub",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@floating-ui/react-native": "^0.10.1",

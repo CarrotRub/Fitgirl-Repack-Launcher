@@ -9,7 +9,7 @@
   "keywords": [
     "scraper"
   ],
-  "author": "Carotiide",
+  "author": "CarrotRub",
   "license": "MIT",
   "dependencies": {
     "fs": "^0.0.1-security",

@@ -4,6 +4,11 @@
 
 FitGirl Launcher is an Electron-based application built using vanilla JavaScript. It provides a platform to download and manage games from FitGirl Repacks.
 
+## Discord 
+
+This the the discord of the community, don't forget to join :)
+https://discord.gg/mXkC2Egwng
+
 ## Installation
 
 To install and run the application locally, follow these steps:

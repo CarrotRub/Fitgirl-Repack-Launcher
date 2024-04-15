@@ -1,4 +1,4 @@
-# FitGirl Launcher App
+# FitGirl Launcher App (BETA)
 
 ![FitGirl Launcher Logo](src/private/icons/fitgirl_icon.png)
 

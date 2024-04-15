@@ -1,6 +1,4 @@
-ftgGamesData.json
-dwnld.json
-descs.json
+*.json
 node_modules/
 *.log
 *.tmp

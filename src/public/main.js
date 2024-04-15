@@ -15,6 +15,7 @@ const WebTorrent = require('webtorrent');
 const readline = require('readline');
 const { getGamesData } = require("../public/scripts/singlescrap");
 const { electron } = require('process');
+const { resolve } = require('path');
 const client = new WebTorrent();
 global.client = client;
 global.win;
@@ -72,7 +73,7 @@ ipcMain.handle('show-context-menu-game', (event) => {
   menu.popup({ window: BrowserWindow.fromWebContents(event.sender) })
 })
 
-ipcMain.handle('executeBridgedFile', (event, filePath) => {
+ipcMain.handle('execute-bridged-file', (event, filePath) => {
   // Execute the file
   exec(`"${filePath}"`, (error, stdout, stderr) => {
     if (error) {
@@ -87,7 +88,7 @@ ipcMain.handle('executeBridgedFile', (event, filePath) => {
 });
 
 });
-ipcMain.on('startTorrent', (event, torrentId, downloadPath) => {
+ipcMain.on('start-torrent', (event, torrentId, downloadPath) => {
   
   // Assign the torrent variable in the event handler
   global.torrent = client.add(torrentId, { path: downloadPath });
@@ -114,7 +115,7 @@ ipcMain.on('startTorrent', (event, torrentId, downloadPath) => {
     }
   }, 500);
 });
-ipcMain.on('stopTorrent', () => {
+ipcMain.on('stop-torrent', () => {
   if (global.torrent) {
     global.torrent.destroy(() => {
       global.win.webContents.send('torrentStopped');
@@ -145,7 +146,7 @@ ipcMain.handle('format-date', (event, date, format) => {
 ipcMain.handle('get-dirname', () => {
   return app.getAppPath();
 });
-ipcMain.handle('readFile', async (event, filePath) => {
+ipcMain.handle('read-file', async (event, filePath) => {
   try {
     return new Promise((resolve, reject) => {
       fs.readFile(filePath, 'utf-8', (err, data) => {
@@ -160,7 +161,7 @@ ipcMain.handle('readFile', async (event, filePath) => {
     throw new Error(error);
   }
 });
-ipcMain.handle('readFileSync', async (event,filePath) => {
+ipcMain.handle('read-file-sync', async (event,filePath) => {
   try {
     return fs.readFileSync(filePath, 'utf-8')
   } catch (error) {
@@ -181,7 +182,7 @@ ipcMain.handle('single-scrap', async (event, linkURL) =>{
    throw new Error(error)
   }
 });
-ipcMain.handle('writeFile', (event, filePath, updatedData, encoding) => {
+ipcMain.handle('write-file', (event, filePath, updatedData, encoding) => {
   return new Promise((resolve, reject) => {
       fs.writeFile(filePath, updatedData, encoding, (err) => {
           if (err) {
@@ -194,7 +195,22 @@ ipcMain.handle('writeFile', (event, filePath, updatedData, encoding) => {
       });
   });
 });
-
+ipcMain.handle('read-json-file',(event, filePath) => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            try {
+                const jsonData = JSON.parse(data);
+                resolve(jsonData);
+            } catch (parseError) {
+                reject(parseError);
+            }
+        });
+    });
+})
 const createWindow = () => {
 
   global.win = new BrowserWindow({

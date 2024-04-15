@@ -13,9 +13,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     const picTempPath = primaryAPI.resolvePath(dirname, '../../src/private/temp/pic.tmp');
     const magnetPath = primaryAPI.resolvePath(dirname, '../../src/private/temp/magnet_links.tmp');
     const descsPath = primaryAPI.resolvePath(dirname, '../../src/private/temp/descs.json');
-    const dwnldGames = primaryAPI.resolvePath(dirname, '../../src/private/games/dwnld.json');
+    const downloadedGames = primaryAPI.resolvePath(dirname, '../../src/private/library/downloaded_games.json');
+    const infoDownloadedGamesFile = primaryAPI.resolvePath(dirname, '../../src/private/library/info_downloaded_games.json')
     const autoInstallerPath = primaryAPI.resolvePath(dirname, '../public/apps/bin/installer.exe');
-
+    
     let intervalId = null;
 
     var isDownloading = false;
@@ -120,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.log("should NOT be destroying bbg")
                     console.log(magnetLink)
                     try {
-                        let result = await togglePathWindowAsync(magnetLink);
+                        let result = await togglePathWindowAsync(magnetLink, title, srcPic, desc);
                         if (result === false) {
                             console.log('User canceled the operation.');
                         } else {
@@ -198,6 +199,89 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
+
+
+
+
+/**
+ * Asynchronous function to check game installation status and update game data inside the necessary json files.
+ * I know it's inverted.
+ * @param {string} titleGame The title of the game.
+ * @param {string} imageGame The image of the game.
+ * @param {string} descriptionGame The description of the game.
+ */
+
+async function checkInstallLib(imageGame,titleGame, descriptionGame) {
+    try {
+        let isGameDone = sessionStorage.getItem('isDone');
+        
+        let gameDoneData = { games: [] };
+        
+        let infoDownloadedGames = {};
+        // Read existing gameDoneData if available
+        try {
+            var gameDoneDataStr = await primaryAPI.readFile(downloadedGames);
+        } catch (error){
+            console.error("not existing")
+        }
+        
+        if (gameDoneDataStr) {
+            gameDoneData = JSON.parse(gameDoneDataStr);
+        }
+        
+        // Read existing infoDownloadedGames if available
+        const infoDownloadedGamesStr = await primaryAPI.readFile(infoDownloadedGamesFile);
+        if (infoDownloadedGamesStr) {
+            infoDownloadedGames = JSON.parse(infoDownloadedGamesStr);
+        }
+        
+        const torrentGameName = sessionStorage.getItem('torrentFolderName');
+        const isTorrentNameInJSON = gameDoneData.games.includes(torrentGameName);
+
+        if (isTorrentNameInJSON) {
+            console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
+            stopUIUpdate();
+            await torrentAPI.stopTorrent();
+            infoDownloadedGames[torrentGameName] = {
+                title: titleGame,
+                image: imageGame,
+                description: descriptionGame
+            };
+            
+            const updatedJson = JSON.stringify(gameDoneData, null, 2);
+            const infoDownloadedGamesJson = JSON.stringify(infoDownloadedGames, null, 2);
+            
+            primaryAPI.writeFile(downloadedGames, updatedJson, 'utf8');
+            primaryAPI.writeFile(infoDownloadedGamesFile, infoDownloadedGamesJson, 'utf8');
+            console.log("hallo :",infoDownloadedGamesJson);
+            startEXEProcessing();
+        } else if (isGameDone === 'true' && !isTorrentNameInJSON) {
+            console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
+            stopUIUpdate();
+            await torrentAPI.stopTorrent();
+            gameDoneData.games.push(torrentGameName);
+            
+            // Add game information to infoDownloadedGames
+            infoDownloadedGames[torrentGameName] = {
+                title: titleGame,
+                image: imageGame,
+                description: descriptionGame
+            };
+            
+            const updatedJson = JSON.stringify(gameDoneData, null, 2);
+            const infoDownloadedGamesJson = JSON.stringify(infoDownloadedGames, null, 2);
+            
+            primaryAPI.writeFile(downloadedGames, updatedJson, 'utf8');
+            primaryAPI.writeFile(infoDownloadedGamesFile, infoDownloadedGamesJson, 'utf8')
+            console.log("hallo :",infoDownloadedGamesJson)
+            startEXEProcessing();
+            
+        }
+    } catch (error) {
+        console.error('Error during game installation check:', error);
+    }
+}
+
     /**
      * Modifies the visual data directly.
      * 
@@ -209,7 +293,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      * 
      * I think <3.
      */
-    async function updateDownloadUI() {
+    async function updateDownloadUI(titleGame, imageGame, descriptionGame) {
         let downloadSpeed = sessionStorage.getItem('downloadSpeed');
         let uploadSpeed = sessionStorage.getItem('uploadSpeed');
         let totalSize = sessionStorage.getItem('totalSize');
@@ -217,8 +301,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         let progressBar = sessionStorage.getItem('progressBar');
         let downloadedSize = sessionStorage.getItem('downloadedSize');
         let peers = sessionStorage.getItem('peers');
-        let isGameDone = sessionStorage.getItem('isDone');
-
+        
         document.querySelector('#downloadSpeed').innerHTML = `Download Speed: ${downloadSpeed}`;
         document.querySelector('#uploadSpeed').innerHTML = `Upload Speed: ${uploadSpeed}`;
         document.querySelector('#total').innerHTML = `Total Downloaded : ${totalSize}`;
@@ -230,47 +313,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
         document.querySelector('#downloaded').innerHTML = `Downloaded : ${downloadedSize}`;
         document.querySelector('#numPeers').innerHTML = `Peers : ${peers}`;
-        primaryAPI.readFile(dwnldGames)
-            .then(async (gameDoneData) => {
-                try {
-                    // Parse the JSON data
-                    const jsonData = JSON.parse(gameDoneData);
-                    var torrentGameName = sessionStorage.getItem('torrentFolderName');
 
-                    // Check if torrentName is in jsonData
-                    const isTorrentNameInJSON = jsonData.games.includes(torrentGameName);
-
-                    if (isTorrentNameInJSON) {
-                        console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
-                        stopUIUpdate();
-
-                        torrentAPI.stopTorrent();
-
-                        await startEXEProcessing();
-                    } else if (isGameDone == 'true' && !isTorrentNameInJSON) {
-                        console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
-
-                        stopUIUpdate();
-
-                        torrentAPI.stopTorrent();
+        checkInstallLib(titleGame, imageGame, descriptionGame)
 
 
-                        jsonData.games.push(torrentGameName);
-
-                        // Convert the updated JSON data back to a string
-                        const updatedJson = JSON.stringify(jsonData, null, 2);
-                        await startEXEProcessing();
-
-                        // Write the updated JSON back to the file
-                        return primaryAPI.writeFile(dwnldGames, updatedJson, 'utf8');
-                    }
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
-                }
-            })
-            .catch((err) => {
-                console.error('Error reading or writing JSON file:', err);
-            });
 
 
 
@@ -293,10 +339,9 @@ document.addEventListener('DOMContentLoaded', async function() {
      * Start "UI of downloading" update process.
      * //SECONDARY// PROCESS.
      */
-    function startUIDownloadUpdate() {
+    function startUIDownloadUpdate(titleGame, imageGame, descriptionGame) {
         if (!intervalId) {
-            intervalId = setInterval(updateDownloadUI, 505);
-
+            intervalId = setInterval(() => updateDownloadUI(titleGame, imageGame, descriptionGame), 505);
         }
     }
 
@@ -307,7 +352,7 @@ document.addEventListener('DOMContentLoaded', async function() {
      * @param {string} magnetlink The magnet link.
      * @returns {Promise<boolean|{pathWindow: HTMLElement, inputValue: string}>} A promise resolving to either false if canceled or an object containing the path window element and the selected path.
      */
-    async function togglePathWindowAsync(magnetlink) {
+    async function togglePathWindowAsync(magnetlink, titleGame, imageGame, descriptionGame ) {
         return new Promise(async resolve => {
             let pathWindow = document.createElement('div');
             pathWindow.className = 'pathWindow';
@@ -315,6 +360,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             pathWindow.style.top = '50%';
             pathWindow.style.left = '50%';
             pathWindow.style.transform = 'translate(-50%, -50%)';
+
 
             let pathContainer = document.createElement('div');
             let pathInput = document.createElement('input');
@@ -347,7 +393,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         updatingTorrent();
                         try {
 
-                            startUIDownloadUpdate()
+                            startUIDownloadUpdate(titleGame, imageGame, descriptionGame)
 
                         } catch (error) {
                             throw new Error(error)
@@ -571,7 +617,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             const returnSlideArrow = document.querySelector('.return-arrow-sld');
             if (torrentedMagnet === magnetlink) {
                 try {
-                    startUIDownloadUpdate()
+                    startUIDownloadUpdate(title,link,descsContent)
                 } catch (error) {
                     throw new Error(error)
                 }
@@ -588,7 +634,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (!isDownloading) {
                     console.log("should NOT be destroying bbg")
 
-                    let result = await togglePathWindowAsync(magnetlink);
+                    let result = await togglePathWindowAsync(magnetlink, link, title, descC);
 
                     if (result === false) {
                         console.log('User canceled the operation.');
@@ -653,7 +699,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         event.preventDefault();
                         secondaryAPI.contextMenuGame()
                     })
-                    
+
                     // Animation for the game bg
                     imageOption.addEventListener('mouseout', function() {
                         let blurOverlay = fitgirlLauncher.querySelector('.blur-overlay');

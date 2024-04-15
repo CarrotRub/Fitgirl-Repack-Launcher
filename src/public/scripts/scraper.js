@@ -9,6 +9,9 @@ const titlesTempPath = path.resolve(__dirname, '../../private/temp/titles.tmp');
 const picTempPath = path.resolve(__dirname, '../../private/temp/pic.tmp');
 const magnetLinksTempPath = path.resolve(__dirname, '../../private/temp/magnet_links.tmp');
 const descTempPath = path.resolve(__dirname, '../../private/temp/descs.json');
+const downloadedGames = path.resolve(__dirname, '../../private/library/downloaded_games.json');
+const infoDownloadedGamesFile = path.resolve(__dirname, '../../private/library/info_downloaded_games.json')
+
 var exec = require('child_process').execFile;
 
 // Function to spawn the C++ child process
@@ -214,6 +217,15 @@ const writingData = async () => {
     console.log("Saved Descriptions");
   });
 
+  fs.writeFile(downloadedGames, '', function(err){
+    if (err) throw err;
+    console.log("Created file")
+  });
+
+  fs.writeFile(infoDownloadedGamesFile, '', function(err){
+    if (err) throw err;
+    console.log("Created file")
+  });
 };
 async function downloadSitemap(url, filename) {
   try {
@@ -258,7 +270,7 @@ for (let i = 0; i < 5; i++) {
 }
 (async () => {
   try {
-    if (isFileNotEmpty([titlesTempPath, picTempPath, descTempPath, magnetLinksTempPath])) {
+    if (isFileNotEmpty([titlesTempPath, picTempPath, descTempPath, magnetLinksTempPath, downloadedGames, infoDownloadedGamesFile])) {
       if (shouldRunFunction()) {
         //cppProcess
         writingData();

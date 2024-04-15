@@ -13,6 +13,33 @@ To install and run the application locally, follow these steps:
     3. Run `npm install` to install the necessary dependencies.
     4. Run `npm start` to start the application.
 
+### Example
+To install you have to get Node JS on your computer.
+
+Clone the project  
+
+~~~bash  
+  git clone https://github.com/CarrotRub/Fitgirl-Repack-Launcher
+~~~
+
+Go to the project directory  
+
+~~~bash  
+  cd Fitgirl-Repack-Launcher
+~~~
+
+Install dependencies  
+
+~~~bash  
+npm install
+~~~
+
+Start the app
+
+~~~bash  
+npm start
+~~~  
+
 ## Usage
 
 Once the application is running, you can:
@@ -43,7 +70,7 @@ Here are some screenshots of the FitGirl Launcher App:
 
 ### Library Page
 
-- [ ]  Make downloaded games appear in the library.
+- [x]  Make downloaded games appear in the library.
 - [ ]  Add checkmark to downloaded games in the library.
 
 ### Favorites Page

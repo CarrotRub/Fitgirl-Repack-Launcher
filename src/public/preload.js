@@ -15,16 +15,16 @@ contextBridge.exposeInMainWorld('scrapeAPI', {
     } catch (error) {
         throw new Error(error);
     }
-},
+  },
 
 });
 
 //Expose torrentAPI handlers throught a context bridge :3.
 contextBridge.exposeInMainWorld('torrentAPI', {
   //Exposing the torrent start func.
-  startTorrent: (torrentId, downloadPath) => ipcRenderer.send('startTorrent', torrentId, downloadPath),
+  startTorrent: (torrentId, downloadPath) => ipcRenderer.send('start-torrent', torrentId, downloadPath),
   //Exposing the torrent stop func.
-  stopTorrent: () => ipcRenderer.send('stopTorrent'),
+  stopTorrent: () => ipcRenderer.send('stop-torrent'),
   //Exposing the torrent "on" func for channeling the data continuously (not sure abt the word mb)
   on: (channel, func) => ipcRenderer.on(channel, (event, ...args) => func(...args)),
   //Kill it.
@@ -35,7 +35,7 @@ contextBridge.exposeInMainWorld('torrentAPI', {
 contextBridge.exposeInMainWorld('primaryAPI', {
   executeBridgedFile: (filePath) => {
     try {
-      return ipcRenderer.invoke('executeBridgedFile', filePath)
+      return ipcRenderer.invoke('execute-bridged-file', filePath)
     } catch (error) {
       throw new Error(error)
     }
@@ -70,7 +70,7 @@ contextBridge.exposeInMainWorld('primaryAPI', {
   //IPC handler for readFile
   readFile: async (filePath) => {
     try {
-      return await ipcRenderer.invoke('readFile', filePath);
+      return await ipcRenderer.invoke('read-file', filePath);
     } catch (error) {
       throw new Error(error);
     }
@@ -79,7 +79,7 @@ contextBridge.exposeInMainWorld('primaryAPI', {
   //IPC handler for readFileSync
   readFileSync: async (filePath) => {
     try {
-      return await ipcRenderer.invoke('readFileSync', filePath)
+      return await ipcRenderer.invoke('read-file-sync', filePath)
     } catch (error) {
       throw new Error(error);
     }
@@ -93,13 +93,20 @@ contextBridge.exposeInMainWorld('primaryAPI', {
 
   writeFile: (filePath, updatedData, encoding) => {
     try {
-        return ipcRenderer.invoke('writeFile', filePath, updatedData, encoding);
+        return ipcRenderer.invoke('write-file', filePath, updatedData, encoding);
     } catch (error) {
         throw new Error(error);
     }
   },
 
 
+  readJSONFile: (filePath) => {
+    try {
+      return ipcRenderer.invoke('read-json-file', filePath);
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 });
 
 // Expose secondary functions handlers to the renderer process.

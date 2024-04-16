@@ -1,3 +1,4 @@
+
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
@@ -14,16 +15,41 @@ const infoDownloadedGamesFile = path.resolve(__dirname, '../../private/library/i
 
 var exec = require('child_process').execFile;
 
+/* Start of platform detection */
+
+// Determine if the user is using Windows or Linux and set the executable file extension accordingly
+ // Alert the user that this app is not supported on Mac/Linux platforms
+ function drawBox(message) {
+  const length = message.length + 4; // Length of the message + 4 for padding and borders
+  const border = "*".repeat(length); // Top and bottom border
+
+  console.log(border);
+  console.log(`* ${message} *`); // Message with padding and borders
+  console.log(border);
+}
+
+const isWindows = process.platform === 'win32';
+
+/* Console log the platform to verify the correct platform is being detected */
+console.log("Platform: " + process.platform);
+console.log("isWindows: " + isWindows);
+
+if (isWindows) {
+  drawBox("Windows platform detected.");
+} else {
+  drawBox("Mac/Linux platform detected. \nThis app is not supported on Mac/Linux platforms for the time being.");
+}
+
+/* End of platform detection */
+
 // Function to spawn the C++ child process
 function runCppProcess() {
     const cppExecutable = './app/display_image.exe'; 
-
-
     const childProcess = exec(cppExecutable, function(err, data){
       console.log(err)
       console.log(data.toString)
     });
-    console.log("ran it")
+    console.log('C++ process started.');
     // Return the child process object
     return childProcess;
 }

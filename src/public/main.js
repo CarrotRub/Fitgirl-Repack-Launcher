@@ -2,7 +2,9 @@ const {
   app,
   BrowserWindow,
   ipcMain,
-  Menu
+  Menu,
+  dialog,
+
 } = require('electron')
 const {
   exec
@@ -13,9 +15,15 @@ const fs = require('fs');
 const moment = require('moment');
 const WebTorrent = require('webtorrent');
 const readline = require('readline');
-const { getGamesData } = require("../public/scripts/singlescrap");
-const { electron } = require('process');
-const { resolve } = require('path');
+const {
+  getGamesData
+} = require("../public/scripts/singlescrap");
+const {
+  electron
+} = require('process');
+const {
+  resolve
+} = require('path');
 const client = new WebTorrent();
 global.client = client;
 global.win;
@@ -31,113 +39,146 @@ function prettyBytes(num) {
   return (neg ? '-' : '') + num + ' ' + unit;
 }
 
+async function openFolder() {
+  return dialog.showOpenDialog(global.win, {
+      properties: ['openDirectory']
+  }).then(result => {
+      if (!result.canceled && result.filePaths.length > 0) {
+          const selectedFolder = result.filePaths[0];
+          console.log('Selected folder:', selectedFolder);
+          return selectedFolder;
+      } else {
+          throw new Error('Folder selection cancelled.');
+      }
+  }).catch(err => {
+      console.error(err);
+      throw err; // Re-throw the error to propagate it to the caller
+  });
+}
 
+ipcMain.handle('open-directory-path', async (event) => {
+  try {
+      const selectedFolder = await openFolder();
+      return selectedFolder;
+  } catch (error) {
+      throw new Error(error);
+  }
+});
 ipcMain.handle('readLinesFromFile', async (event, filePath) => {
   try {
-    return new Promise((resolve, reject) => {
-      const lines = [];
+      return new Promise((resolve, reject) => {
+          const lines = [];
 
-      const rl = readline.createInterface({
-          input: fs.createReadStream(filePath),
-          crlfDelay: Infinity,
-      });
+          const rl = readline.createInterface({
+              input: fs.createReadStream(filePath),
+              crlfDelay: Infinity,
+          });
 
-      rl.on('line', (line) => {
-          lines.push(line);
-      });
+          rl.on('line', (line) => {
+              lines.push(line);
+          });
 
-      rl.on('close', () => {
-          resolve(lines);
-      });
+          rl.on('close', () => {
+              resolve(lines);
+          });
 
-      rl.on('error', (err) => {
-          reject(err);
+          rl.on('error', (err) => {
+              reject(err);
+          });
       });
-  });
   } catch (error) {
-    throw new Error(error);
+      throw new Error(error);
   }
 });
 ipcMain.handle('show-context-menu-game', (event) => {
-  const contextMenuGameTemplate = [
-    {
-      label: 'Place it in Favorites',
-      click: () => { console.log("Went in favorites") }
-    },
-    {
-      label: 'Download',
-      click: () => { console.log("Download started") }
-    },
+  const contextMenuGameTemplate = [{
+          label: 'Place it in Favorites',
+          click: () => {
+              console.log("Went in favorites")
+          }
+      },
+      {
+          label: 'Download',
+          click: () => {
+              console.log("Download started")
+          }
+      },
   ]
   const menu = Menu.buildFromTemplate(contextMenuGameTemplate)
-  menu.popup({ window: BrowserWindow.fromWebContents(event.sender) })
+  menu.popup({
+      window: BrowserWindow.fromWebContents(event.sender)
+  })
 })
 
 ipcMain.handle('execute-bridged-file', (event, filePath) => {
   // Execute the file
   exec(`"${filePath}"`, (error, stdout, stderr) => {
-    if (error) {
-        console.error('Error:', error.message);
-        return;
-    }
-    if (stderr) {
-        console.error('stderr:', stderr);
-        return;
-    }
-    console.log('stdout:', stdout);
-});
+      if (error) {
+          console.error('Error:', error.message);
+          return;
+      }
+      if (stderr) {
+          console.error('stderr:', stderr);
+          return;
+      }
+      console.log('stdout:', stdout);
+  });
 
 });
 ipcMain.on('start-torrent', (event, torrentId, downloadPath) => {
-  
+
   // Assign the torrent variable in the event handler
-  global.torrent = client.add(torrentId, { path: downloadPath });
+  global.torrent = client.add(torrentId, {
+      path: downloadPath
+  });
   setInterval(() => {
-    if (torrent) {
-      const percent = Math.round(torrent.progress * 100 * 100) / 100;
-        global.win.webContents.send('updateInfo', {
-          downloadSpeed: prettyBytes(torrent.downloadSpeed),
-          uploadSpeed: prettyBytes(torrent.uploadSpeed),
-          progress: percent + "%",
-          numPeers: torrent.numPeers,
-          remaining: torrent.done ? 'Done.' : moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize(),
-          total: prettyBytes(torrent.length),
-          downloaded: prettyBytes(torrent.downloaded),
-          torrentMgn: torrentId,
-          torrentDone: torrent.done,
-          torrentName: torrent.name
-        });
-        if (torrent.done == true) {
-          global.torrent.destroy(() => {
-            global.win.webContents.send('torrentStopped');
+      if (torrent) {
+          const percent = Math.round(torrent.progress * 100 * 100) / 100;
+          global.win.webContents.send('updateInfo', {
+              downloadSpeed: prettyBytes(torrent.downloadSpeed),
+              uploadSpeed: prettyBytes(torrent.uploadSpeed),
+              progress: percent + "%",
+              numPeers: torrent.numPeers,
+              remaining: torrent.done ? 'Done.' : moment.duration(torrent.timeRemaining / 1000, 'seconds').humanize(),
+              total: prettyBytes(torrent.length),
+              downloaded: prettyBytes(torrent.downloaded),
+              torrentMgn: torrentId,
+              torrentDone: torrent.done,
+              torrentName: torrent.name
           });
-        }
-    }
+          if (torrent.done == true) {
+              global.torrent.destroy(() => {
+                  global.win.webContents.send('torrentStopped');
+              });
+          }
+      }
   }, 500);
 });
 ipcMain.on('stop-torrent', () => {
   if (global.torrent) {
-    global.torrent.destroy(() => {
-      global.win.webContents.send('torrentStopped');
-    });
+      global.torrent.destroy(() => {
+          global.win.webContents.send('torrentStopped');
+      });
   }
 });
-ipcMain.handle('initialize-webtorrent-client',(event) => {
+ipcMain.handle('initialize-webtorrent-client', (event) => {
   try {
-    const webClient = new WebTorrent();
-    
-    return webClient;
+      const webClient = new WebTorrent();
+
+      return webClient;
   } catch (error) {
-    throw new Error(error)
+      throw new Error(error)
   }
 });
-ipcMain.handle('initialize-function-torrentObj', async(event, codedFunc) => {
+ipcMain.handle('initialize-function-torrentObj', async (event, codedFunc) => {
   try {
-    return new Promise((resolve) => {
-      resolve(function(torrentObj){codedFunc})
-    })
+      return new Promise((resolve) => {
+          resolve(function(torrentObj) {
+              codedFunc
+          })
+      })
   } catch (error) {
-    throw new Error (error)
+      throw new Error(error)
   }
 })
 ipcMain.handle('format-date', (event, date, format) => {
@@ -146,26 +187,22 @@ ipcMain.handle('format-date', (event, date, format) => {
 ipcMain.handle('get-dirname', () => {
   return app.getAppPath();
 });
-ipcMain.handle('read-file', async (event, filePath) => {
-  try {
-    return new Promise((resolve, reject) => {
+ipcMain.handle('read-file', (event, filePath) => {
+  return new Promise((resolve, reject) => {
       fs.readFile(filePath, 'utf-8', (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
+          if (err) {
+              reject(err);
+          } else {
+              resolve(data);
+          }
       });
-    });
-  } catch (error) {
-    throw new Error(error);
-  }
+  });
 });
-ipcMain.handle('read-file-sync', async (event,filePath) => {
+ipcMain.handle('read-file-sync', async (event, filePath) => {
   try {
-    return fs.readFileSync(filePath, 'utf-8')
+      return fs.readFileSync(filePath, 'utf-8')
   } catch (error) {
-    throw new Error(error)
+      throw new Error(error)
   }
 });
 ipcMain.handle('resolve-path', async (event, ...args) => {
@@ -174,12 +211,12 @@ ipcMain.handle('resolve-path', async (event, ...args) => {
 ipcMain.handle('join-path', async (event, ...args) => {
   return path.join(...args);
 });
-ipcMain.handle('single-scrap', async (event, linkURL) =>{
+ipcMain.handle('single-scrap', async (event, linkURL) => {
   try {
-    const usableData = await getGamesData(linkURL);
-    return usableData;
+      const usableData = await getGamesData(linkURL);
+      return usableData;
   } catch (error) {
-   throw new Error(error)
+      throw new Error(error)
   }
 });
 ipcMain.handle('write-file', (event, filePath, updatedData, encoding) => {
@@ -195,22 +232,23 @@ ipcMain.handle('write-file', (event, filePath, updatedData, encoding) => {
       });
   });
 });
-ipcMain.handle('read-json-file',(event, filePath) => {
-    return new Promise((resolve, reject) => {
-        fs.readFile(filePath, 'utf8', (err, data) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            try {
-                const jsonData = JSON.parse(data);
-                resolve(jsonData);
-            } catch (parseError) {
-                reject(parseError);
-            }
-        });
-    });
+ipcMain.handle('read-json-file', (event, filePath) => {
+  return new Promise((resolve, reject) => {
+      fs.readFile(filePath, 'utf8', (err, data) => {
+          if (err) {
+              reject(err);
+              return;
+          }
+          try {
+              const jsonData = JSON.parse(data);
+              resolve(jsonData);
+          } catch (parseError) {
+              reject(parseError);
+          }
+      });
+  });
 })
+
 const createWindow = () => {
 
   global.win = new BrowserWindow({
@@ -218,7 +256,7 @@ const createWindow = () => {
       height: 720,
       minWidth: 1280,
       minHeight: 720,
-      icon : 'src\\private\\icons\\fitgirl_icon.png' ,
+      icon: 'src\\private\\icons\\fitgirl_icon.png',
       autoHideMenuBar: true,
       webPreferences: {
           nodeIntegration: true,
@@ -234,7 +272,7 @@ const runSpecificFile = () => {
   let consoleOutput = '';
 
   // Override console.log to capture its output
- 
+
   const filePath = 'src/public/scripts/scraper.js';
 
   const command = `node ${filePath}`;
@@ -265,6 +303,6 @@ app.whenReady().then(() => {
 })
 
 app.on('window-all-closed', () => {
-  
+
   if (process.platform !== 'darwin') app.quit()
 })

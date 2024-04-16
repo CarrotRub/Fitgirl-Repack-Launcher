@@ -33,6 +33,15 @@ contextBridge.exposeInMainWorld('torrentAPI', {
 
 // Expose primary functions handlers to the renderer process.
 contextBridge.exposeInMainWorld('primaryAPI', {
+
+  openPathDir: () => {
+    try {
+      return ipcRenderer.invoke('open-directory-path');
+    } catch (error) {
+      throw new Error(error)
+    }
+  },
+
   executeBridgedFile: (filePath) => {
     try {
       return ipcRenderer.invoke('execute-bridged-file', filePath)

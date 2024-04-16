@@ -216,16 +216,27 @@ const writingData = async () => {
     if (err) throw err;
     console.log("Saved Descriptions");
   });
+  if (!fs.existsSync(downloadedGames)) {
+    try {
+      fs.writeFile(downloadedGames, '', function(err){
+        if (err) throw err;
+        console.log("Created file")
+      });
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 
-  fs.writeFile(downloadedGames, '', function(err){
-    if (err) throw err;
-    console.log("Created file")
-  });
-
-  fs.writeFile(infoDownloadedGamesFile, '', function(err){
-    if (err) throw err;
-    console.log("Created file")
-  });
+  if (!fs.existsSync(infoDownloadedGamesFile)) {
+    try {
+      fs.writeFile(infoDownloadedGamesFile, '', function(err){
+        if (err) throw err;
+        console.log("Created file")
+      });
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 };
 async function downloadSitemap(url, filename) {
   try {
@@ -275,7 +286,7 @@ for (let i = 0; i < 5; i++) {
         //cppProcess
         writingData();
         iterationSitemap();
-        closeCppProcess()
+        //closeCppProcess()
       } else {
         console.log("Function is not allowed to run yet. Window and file operations skipped.");
       }

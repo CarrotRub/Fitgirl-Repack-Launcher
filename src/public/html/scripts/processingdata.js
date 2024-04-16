@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const downloadedGames = primaryAPI.resolvePath(dirname, '../../src/private/library/downloaded_games.json');
     const infoDownloadedGamesFile = primaryAPI.resolvePath(dirname, '../../src/private/library/info_downloaded_games.json')
     const autoInstallerPath = primaryAPI.resolvePath(dirname, '../public/apps/bin/installer.exe');
-    
+
     let intervalId = null;
 
     var isDownloading = false;
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (intervalId) {
             clearInterval(intervalId);
             intervalId = null;
-            
+
         }
     }
     /**
@@ -78,15 +78,35 @@ document.addEventListener('DOMContentLoaded', async function() {
             infoContainer.textContent = desc;
 
             const downloadButton = document.createElement('button');
+            primaryAPI.readFile(downloadedGames, 'utf8')
+                .then(slideData => {
+                    console.log("File data successfully read:", slideData);
 
-            if (isDownloading && sessionStorage.getItem('torrentCheckMagnet') === magnetLink) {
-                downloadButton.textContent = 'Stop Downloading';
-            } else if (!isDownloading && sessionStorage.getItem('torrentCheckMagnet') === magnetLink) {
-                downloadButton.textContent = 'Continue Download';
-            } else {
-                downloadButton.textContent = 'Download';
-            }
-            downloadButton.className = 'download-button';
+                    let gameJSON = JSON.parse(slideData);
+                    let forCheckTitle = title.trim()
+                    try {
+                        console.log(forCheckTitle);
+                        var isUITorrentNameInJSON = gameJSON.games.includes(forCheckTitle);;
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        return;
+                    }
+                    downloadButton.className = 'download-button';
+                    if (isDownloading && sessionStorage.getItem('torrentCheckMagnet') === magnetLink) {
+                        downloadButton.textContent = 'Stop Downloading';
+                    } else if (!isDownloading && sessionStorage.getItem('torrentCheckMagnet') === magnetLink) {
+                        downloadButton.textContent = 'Continue Download';
+                    } else if (isUITorrentNameInJSON) {
+                        downloadButton.textContent = 'Install';
+                    } else {
+                        downloadButton.textContent = 'Download';
+                    };
+                })
+                .catch(error => {
+                    console.error('Error reading file:', error);
+                });
+
+            
 
             const progressContainer = document.createElement('div');
             progressContainer.className = 'preprocess-info';
@@ -140,7 +160,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     console.log("should be destroying bbg");
                     torrentAPI.stopTorrent();
                     stopUIUpdate();
-                    
+
                     downloadButton.textContent = "Download";
 
                     isDownloading = false;
@@ -202,85 +222,68 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
 
+    /**
+     * Asynchronous function to check game installation status and update game data inside the necessary json files.
+     * I know it's inverted.
+     * @param {string} titleGame The title of the game.
+     * @param {string} imageGame The image of the game.
+     * @param {string} descriptionGame The description of the game.
+     */
 
-/**
- * Asynchronous function to check game installation status and update game data inside the necessary json files.
- * I know it's inverted.
- * @param {string} titleGame The title of the game.
- * @param {string} imageGame The image of the game.
- * @param {string} descriptionGame The description of the game.
- */
-
-async function checkInstallLib(imageGame,titleGame, descriptionGame) {
-    try {
-        let isGameDone = sessionStorage.getItem('isDone');
-        
-        let gameDoneData = { games: [] };
-        
-        let infoDownloadedGames = {};
-        // Read existing gameDoneData if available
+    async function checkInstallLib(imageGame, titleGame, descriptionGame) {
         try {
-            var gameDoneDataStr = await primaryAPI.readFile(downloadedGames);
-        } catch (error){
-            console.error("not existing")
-        }
-        
-        if (gameDoneDataStr) {
-            gameDoneData = JSON.parse(gameDoneDataStr);
-        }
-        
-        // Read existing infoDownloadedGames if available
-        const infoDownloadedGamesStr = await primaryAPI.readFile(infoDownloadedGamesFile);
-        if (infoDownloadedGamesStr) {
-            infoDownloadedGames = JSON.parse(infoDownloadedGamesStr);
-        }
-        
-        const torrentGameName = sessionStorage.getItem('torrentFolderName');
-        const isTorrentNameInJSON = gameDoneData.games.includes(torrentGameName);
-
-        if (isTorrentNameInJSON) {
-            console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
-            stopUIUpdate();
-            await torrentAPI.stopTorrent();
-            infoDownloadedGames[torrentGameName] = {
-                title: titleGame,
-                image: imageGame,
-                description: descriptionGame
+            const isGameDone = sessionStorage.getItem('isDone');
+            titleGame = titleGame.replace(" [Fitgirl Repack]", "");
+            const gameDoneData = {
+                games: []
             };
-            
-            const updatedJson = JSON.stringify(gameDoneData, null, 2);
-            const infoDownloadedGamesJson = JSON.stringify(infoDownloadedGames, null, 2);
-            
-            primaryAPI.writeFile(downloadedGames, updatedJson, 'utf8');
-            primaryAPI.writeFile(infoDownloadedGamesFile, infoDownloadedGamesJson, 'utf8');
-            console.log("hallo :",infoDownloadedGamesJson);
-            startEXEProcessing();
-        } else if (isGameDone === 'true' && !isTorrentNameInJSON) {
-            console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
-            stopUIUpdate();
-            await torrentAPI.stopTorrent();
-            gameDoneData.games.push(torrentGameName);
-            
-            // Add game information to infoDownloadedGames
-            infoDownloadedGames[torrentGameName] = {
-                title: titleGame,
-                image: imageGame,
-                description: descriptionGame
-            };
-            
-            const updatedJson = JSON.stringify(gameDoneData, null, 2);
-            const infoDownloadedGamesJson = JSON.stringify(infoDownloadedGames, null, 2);
-            
-            primaryAPI.writeFile(downloadedGames, updatedJson, 'utf8');
-            primaryAPI.writeFile(infoDownloadedGamesFile, infoDownloadedGamesJson, 'utf8')
-            console.log("hallo :",infoDownloadedGamesJson)
-            startEXEProcessing();
-            
+            let infoDownloadedGames = {};
+    
+            // Read existing gameDoneData if available
+            const gameDoneDataStr = await primaryAPI.readFile(downloadedGames).catch(error => console.error("not existing"));
+            if (gameDoneDataStr) {
+                Object.assign(gameDoneData, JSON.parse(gameDoneDataStr));
+            }
+    
+            // Read existing infoDownloadedGames if available
+            const infoDownloadedGamesStr = await primaryAPI.readFile(infoDownloadedGamesFile);
+            if (infoDownloadedGamesStr) {
+                infoDownloadedGames = JSON.parse(infoDownloadedGamesStr);
+            }
+    
+            const torrentGameName = sessionStorage.getItem('torrentFolderName');
+            const isTorrentNameInJSON = gameDoneData.games.includes(titleGame);
+    
+            if (isTorrentNameInJSON || (isGameDone === 'true' && !isTorrentNameInJSON)) {
+                console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
+                stopUIUpdate();
+                await torrentAPI.stopTorrent();
+    
+                if (!isTorrentNameInJSON) {
+                    gameDoneData.games.push(titleGame);
+                }
+    
+                infoDownloadedGames[torrentGameName] = {
+                    title: titleGame,
+                    image: imageGame,
+                    description: descriptionGame
+                };
+    
+                const updatedJson = JSON.stringify(gameDoneData, null, 2);
+                const infoDownloadedGamesJson = JSON.stringify(infoDownloadedGames, null, 2);
+    
+                await Promise.all([
+                    primaryAPI.writeFile(downloadedGames, updatedJson, 'utf8'),
+                    primaryAPI.writeFile(infoDownloadedGamesFile, infoDownloadedGamesJson, 'utf8')
+                ]);
+    
+                console.log("hallo :", infoDownloadedGamesJson);
+                startEXEProcessing();
+            }
+        } catch (error) {
+            console.error('Error during game installation check:', error);
         }
-    } catch (error) {
-        console.error('Error during game installation check:', error);
     }
-}
 
     /**
      * Modifies the visual data directly.
@@ -301,7 +304,7 @@ async function checkInstallLib(imageGame,titleGame, descriptionGame) {
         let progressBar = sessionStorage.getItem('progressBar');
         let downloadedSize = sessionStorage.getItem('downloadedSize');
         let peers = sessionStorage.getItem('peers');
-        
+
         document.querySelector('#downloadSpeed').innerHTML = `Download Speed: ${downloadSpeed}`;
         document.querySelector('#uploadSpeed').innerHTML = `Upload Speed: ${uploadSpeed}`;
         document.querySelector('#total').innerHTML = `Total Downloaded : ${totalSize}`;
@@ -315,7 +318,6 @@ async function checkInstallLib(imageGame,titleGame, descriptionGame) {
         document.querySelector('#numPeers').innerHTML = `Peers : ${peers}`;
 
         checkInstallLib(titleGame, imageGame, descriptionGame)
-
 
 
 
@@ -352,7 +354,7 @@ async function checkInstallLib(imageGame,titleGame, descriptionGame) {
      * @param {string} magnetlink The magnet link.
      * @returns {Promise<boolean|{pathWindow: HTMLElement, inputValue: string}>} A promise resolving to either false if canceled or an object containing the path window element and the selected path.
      */
-    async function togglePathWindowAsync(magnetlink, titleGame, imageGame, descriptionGame ) {
+    async function togglePathWindowAsync(magnetlink, titleGame, imageGame, descriptionGame) {
         return new Promise(async resolve => {
             let pathWindow = document.createElement('div');
             pathWindow.className = 'pathWindow';
@@ -363,16 +365,52 @@ async function checkInstallLib(imageGame,titleGame, descriptionGame) {
 
 
             let pathContainer = document.createElement('div');
+            pathContainer.className = 'pathContainer';
             let pathInput = document.createElement('input');
             pathInput.id = 'pathID';
             let lastInputPath = localStorage.getItem("lastPath");
             pathInput.value = lastInputPath;
+            let pathInputLabel = document.createElement('label');
+            pathInputLabel.className = 'pathLabel';
+            pathInputLabel.textContent = 'Game Path : ';
+            let folderInput = document.createElement('button');
+            let spanbar1 = document.createElement('span');
+            spanbar1.className = 'bar bar1';
+            let spanbar2 = document.createElement('span');
+            spanbar2.className = 'bar bar2';
+            let spanbar1_2 = document.createElement('span');
+            spanbar1_2.className = 'bar bar1';
+            folderInput.appendChild(spanbar1);
+            folderInput.appendChild(spanbar2);
+            folderInput.appendChild(spanbar1_2);
+            folderInput.className = 'setting-btn';
 
+
+
+            // Add event listener to hidden input for folder selection
+            folderInput.addEventListener('change', function() {
+
+            });
+
+            // Event listener for closing path window
             pathWindow.addEventListener('keyup', function(event) {
                 if (event.isComposing || event.key === "Escape") {
                     console.log("escaped");
                     pathWindow.remove();
                     resolve(false);
+                }
+            });
+
+
+            // Add event listener to button to trigger folder input
+            folderInput.addEventListener('click', async function(event) {
+                try {
+                    console.log("start")
+                    let selectedFolder = await primaryAPI.openPathDir(); // Get the path of the selected folder
+                    console.log(selectedFolder)
+                    pathInput.value = selectedFolder;
+                } catch (error) {
+                    throw new Error(error)
                 }
             });
 
@@ -418,8 +456,10 @@ async function checkInstallLib(imageGame,titleGame, descriptionGame) {
             sessionStorage.setItem("actualPathInput", pathInput.value)
             pathContainer.appendChild(pathInput);
             pathWindow.appendChild(pathContainer);
-
+            pathWindow.appendChild(folderInput);
+            pathContainer.appendChild(pathInputLabel);
             document.body.appendChild(pathWindow);
+
 
         });
     }
@@ -558,7 +598,7 @@ async function checkInstallLib(imageGame,titleGame, descriptionGame) {
             let descsContent = descC;
             let slidingWindow = document.querySelector('.sliding-window');
             slidingWindow.innerHTML = '';
-
+            let downloadButton = document.createElement('button');
             let contentContainer = document.createElement('div');
             contentContainer.className = 'content-container';
 
@@ -571,15 +611,39 @@ async function checkInstallLib(imageGame,titleGame, descriptionGame) {
             infoContainer.className = 'info-container';
             infoContainer.textContent = descsContent.info;
 
-            let downloadButton = document.createElement('button');
-            if (isDownloading && torrentedMagnet === magnetlink) {
-                downloadButton.textContent = 'Stop Downloading';
-            } else if (!isDownloading && torrentedMagnet === magnetlink) {
-                downloadButton.textContent = 'Continue Download';
-            } else {
-                downloadButton.textContent = 'Download';
-            }
             downloadButton.className = 'download-button';
+            primaryAPI.readFile(downloadedGames, 'utf8')
+                .then(slideData => {
+                    console.log("File data successfully read:", slideData);
+
+                    let gameJSON = JSON.parse(slideData);
+                    let forCheckTitle = title.trim()
+                    try {
+                        console.log(forCheckTitle);
+                        var isUITorrentNameInJSON = gameJSON.games.includes(forCheckTitle);
+                        console.log("isUITorrentNameInJSON:", isUITorrentNameInJSON);
+                        console.log("doe$zao");
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        return;
+                    }
+
+                    if (isDownloading && torrentedMagnet === magnetlink) {
+                        downloadButton.textContent = 'Stop Downloading';
+                    } else if (!isDownloading && torrentedMagnet === magnetlink) {
+                        downloadButton.textContent = 'Continue Download';
+                    } else if (isUITorrentNameInJSON) {
+                        downloadButton.textContent = 'Install';
+                    } else {
+                        downloadButton.textContent = 'Download';
+                    };
+                })
+                .catch(error => {
+                    console.error('Error reading file:', error);
+                });
+
+
+
 
             let progressContainer = document.createElement('div');
             progressContainer.className = 'preprocess-info';
@@ -617,14 +681,14 @@ async function checkInstallLib(imageGame,titleGame, descriptionGame) {
             const returnSlideArrow = document.querySelector('.return-arrow-sld');
             if (torrentedMagnet === magnetlink) {
                 try {
-                    startUIDownloadUpdate(title,link,descsContent)
+                    startUIDownloadUpdate(title, link, descsContent)
                 } catch (error) {
                     throw new Error(error)
                 }
             } else if (torrentedMagnet !== magnetlink) {
                 try {
                     stopUIUpdate();
-                    
+
                 } catch (error) {
                     new Error(error)
                 }
@@ -695,7 +759,7 @@ async function checkInstallLib(imageGame,titleGame, descriptionGame) {
                     });
 
                     // Added a context menu after right click on an imageOption
-                    imageOption.addEventListener('contextmenu', function(event){
+                    imageOption.addEventListener('contextmenu', function(event) {
                         event.preventDefault();
                         secondaryAPI.contextMenuGame()
                     })

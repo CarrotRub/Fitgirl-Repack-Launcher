@@ -17,19 +17,20 @@
     "browserify": "^17.0.0",
     "electron": "^27.0.4",
     "moment": "^2.29.4",
+    "node-localstorage": "^3.0.5",
     "puppeteer": "^21.5.2",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-block-resources": "^2.4.3",
+    "sweetalert2": "^11.10.8",
     "transmission": "^0.4.10",
-    "webtorrent": "^1.9.7",
-    "node-localstorage" : "^3.0.5"
+    "webtorrent": "^1.9.7"
   },
   "devDependencies": {
     "@types/webtorrent": "^0.109.8"
   },
   "build": {
     "win": {
-        "requestedExecutionLevel": "requireAdministrator"
+      "requestedExecutionLevel": "requireAdministrator"
     }
-}
+  }
 }

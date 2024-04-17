@@ -33,13 +33,14 @@ const isWindows = process.platform === 'win32';
 /* Console log the platform to verify the correct platform is being detected */
 console.log("Platform: " + process.platform);
 console.log("isWindows: " + isWindows);
+console.log("");
 
 if (isWindows) {
   drawBox("Windows platform detected.");
 } else {
   drawBox("Mac/Linux platform detected. \nThis app is not supported on Mac/Linux platforms for the time being.");
 }
-
+console.log("");
 /* End of platform detection */
 
 // Function to spawn the C++ child process

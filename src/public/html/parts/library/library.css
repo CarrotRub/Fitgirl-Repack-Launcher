@@ -538,3 +538,14 @@ img {
   padding-right: 0.5em;
   white-space: pre-wrap;
 }
+  /* PART OF LIBRARY WINDOW */
+  .start-button{
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #761c7e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  

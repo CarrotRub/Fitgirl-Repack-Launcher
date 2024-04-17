@@ -93,6 +93,7 @@ const getGamesData = async (usableurl) => {
     };
   
       const url = usableurl;
+    
   
       await page.goto(url, { waitUntil: 'domcontentloaded' });
       await page.waitForSelector('.alignleft', { visible: true });

@@ -166,6 +166,7 @@ const getGamesData = async () => {
 
 
 const writingData = async () => {
+  const empytJSON = {};
   const ftgGamesData = await getGamesData();
   const ftgDescs = ftgGamesData.descs.map(gameInfo => gameInfo.info);
   fs.writeFile(titlesTempPath, ftgGamesData.titles.join('\n'), function (err) {
@@ -186,42 +187,47 @@ const writingData = async () => {
     if (err) throw err;
     console.log("Saved Magnet Links");
   });
+
   fs.writeFile(descTempPath, JSON.stringify(ftgGamesData.descs, null, 2), function (err) {
     if (err) throw err;
     console.log("Saved Descriptions");
   });
-  if (!fs.existsSync(downloadedGamesPath)) {
-    try {
-      fs.writeFile(downloadedGamesPath, '', function(err){
-        if (err) throw err;
-        console.log("Created file")
-      });
-    } catch (error) {
-      throw new Error(error)
-    }
-  };
 
-  if (!fs.existsSync(infoDownloadedGamesFilePath)) {
+  if(!isFileNotEmpty(downloadedGamesPath)){
     try {
-      fs.writeFile(infoDownloadedGamesFilePath, '{}', function(err){
+      fs.writeFile(downloadedGamesPath, JSON.stringify(empytJSON, null, 2), function(err){
         if (err) throw err;
-        console.log("Created file")
+        console.log("Created file" )
       });
     } catch (error) {
       throw new Error(error)
     }
-  };
+  }
 
-  if (!fs.existsSync(locallyInstalledGamesPath)) {
+
+  if(!isFileNotEmpty(infoDownloadedGamesFilePath)){
     try {
-      fs.writeFile(locallyInstalledGamesPath, '{}', function(err){
+      fs.writeFile(infoDownloadedGamesFilePath, JSON.stringify(empytJSON, null, 2), function(err){
         if (err) throw err;
-        console.log("Created file")
+        console.log("Created file" )
       });
     } catch (error) {
       throw new Error(error)
     }
-  };
+  }
+
+
+
+  if(!isFileNotEmpty(locallyInstalledGamesPath)){
+    try {
+      fs.writeFile(locallyInstalledGamesPath, JSON.stringify(empytJSON, null, 2), function(err){
+        if (err) throw err;
+        console.log("Created file" )
+      });
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 
 };
 async function downloadSitemap(url, filename) {

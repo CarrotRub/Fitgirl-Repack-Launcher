@@ -15,6 +15,8 @@ const fs = require('fs');
 const moment = require('moment');
 const WebTorrent = require('webtorrent');
 const readline = require('readline');
+const Swal = require('sweetalert2');
+const { spawn } = require('child_process');
 const {
   getGamesData
 } = require("../public/scripts/singlescrap");
@@ -24,9 +26,14 @@ const {
 const {
   resolve
 } = require('path');
+const locallyInstalledGamesPath = path.resolve(__dirname, '..\\private\\library\\locally_installed_games.json');
+const downloadedGamesPath = path.resolve(__dirname, '..\\private\\library\\info_downloaded_games.json')
+
 const client = new WebTorrent();
 global.client = client;
 global.win;
+
+
 
 function prettyBytes(num) {
   const units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -40,22 +47,62 @@ function prettyBytes(num) {
 }
 
 async function openFolder() {
-  return dialog.showOpenDialog(global.win, {
-      properties: ['openDirectory']
-  }).then(result => {
-      if (!result.canceled && result.filePaths.length > 0) {
-          const selectedFolder = result.filePaths[0];
-          console.log('Selected folder:', selectedFolder);
-          return selectedFolder;
-      } else {
-          throw new Error('Folder selection cancelled.');
-      }
-  }).catch(err => {
-      console.error(err);
-      throw err; // Re-throw the error to propagate it to the caller
-  });
+    return dialog.showOpenDialog(global.win, {
+        properties: ['openDirectory']
+    }).then(result => {
+        if (!result.canceled && result.filePaths.length > 0) {
+            const selectedFolder = result.filePaths[0];
+            console.log('Selected folder:', selectedFolder);
+            return selectedFolder;
+        } else {
+            throw new Error('Folder selection cancelled.');
+        }
+    }).catch(err => {
+        console.error(err);
+        throw err; // Re-throw the error to propagate it to the caller
+    });
 }
 
+async function openFolderExecutable() {
+    return new Promise((resolve, reject) => {
+        dialog.showOpenDialog(global.win, {
+            properties: ['openFile'],
+            filters: [{ name: 'Executable Files', extensions: ['exe'] }]
+        }).then(result => {
+            if (!result.canceled && result.filePaths.length > 0) {
+                const selectedFile = result.filePaths[0];
+                console.log('Selected file:', selectedFile);
+                resolve(selectedFile);
+            } else {
+                reject(new Error('File selection cancelled.'));
+            }
+        }).catch(err => {
+            console.error(err);
+            reject(err); // Reject with the error to propagate it to the caller
+        });
+    });
+}
+
+async function placeGameLocally(filePath, gamePath, gameName, gameImage, gameDescription) {
+    return new Promise((resolve, reject) => {
+        try {
+            let existingData = fs.readFileSync(filePath, 'utf8');
+            let installedGameData = JSON.parse(existingData);
+            installedGameData[gameName] = {
+                image: gameImage,
+                description: gameDescription,
+                path: gamePath
+            };
+            const updatedData = JSON.stringify(installedGameData, null, 2);
+            fs.writeFileSync(filePath, updatedData);
+            console.log('File has been saved');
+            resolve(true);
+        } catch (error) {
+            console.error(error.message);
+            reject(false);
+        }
+    });
+}
 ipcMain.handle('open-directory-path', async (event) => {
   try {
       const selectedFolder = await openFolder();
@@ -94,7 +141,7 @@ ipcMain.handle('show-context-menu-game', (event) => {
   const contextMenuGameTemplate = [{
           label: 'Place it in Favorites',
           click: () => {
-              console.log("Went in favorites")
+                console.log("Went in favorites")
           }
       },
       {
@@ -103,14 +150,88 @@ ipcMain.handle('show-context-menu-game', (event) => {
               console.log("Download started")
           }
       },
+      
   ]
   const menu = Menu.buildFromTemplate(contextMenuGameTemplate)
   menu.popup({
       window: BrowserWindow.fromWebContents(event.sender)
   })
-})
+});
 
-ipcMain.handle('execute-bridged-file', (event, filePath) => {
+ipcMain.handle('show-context-menu-install-locally', async (event, titleGame, gameImage, gameDescription) => {
+    const contextMenuInstallTemplate = [{
+        label: 'Add it locally !',
+        click: async () => {
+            try {
+                const returnedGamePath = await openFolderExecutable();
+                console.log("found it", returnedGamePath);
+                const returnOfSuccess = await placeGameLocally(locallyInstalledGamesPath, returnedGamePath, titleGame, gameImage, gameDescription);
+                if (returnOfSuccess) {
+                    console.log("Path saved.");
+
+                    
+                    try {
+                        const data = await new Promise((resolve, reject) => {
+                            fs.readFile(downloadedGamesPath, 'utf-8', (err, data) => {
+                                if (err) {
+                                    console.error('Error reading file:', err);
+                                    reject(err);
+                                } else {
+                                    resolve(data);
+                                }
+                            });
+                        });
+                    
+                        let games = JSON.parse(data);
+                        let actualGame = titleGame; // Use the titleGame parameter here
+                        console.log(actualGame);
+                        
+                        // Iterate over the keys of the parsed JSON object
+                        for (let key in games) {
+                            if (games.hasOwnProperty(key)) {
+                                console.log(key);
+                                if (key.includes(actualGame)) {
+                                    console.log(actualGame, key, "should delete");
+                                    delete games[key];
+                                }
+                            }
+                        }
+                    
+                        // Write the modified data back to the file
+                        const updatedData = JSON.stringify(games, null, 2);
+                        fs.writeFile(downloadedGamesPath, updatedData, (err) => {
+                            if (err) {
+                                console.error('Error writing file:', err);
+                                throw new Error(err);
+                            } else {
+                                console.log('File has been updated');
+                            }
+                        });
+                    
+                    } catch (error) {
+                        console.error(error);
+                        throw new Error(error);
+                    }
+                    
+
+                    return true;
+                } else {
+                    console.error("Operation cancelled.");
+                    return false;
+                }
+            } catch (error) {
+                console.error(error);
+                return false;
+            }
+        }
+    }];
+    const menu = Menu.buildFromTemplate(contextMenuInstallTemplate);
+    menu.popup({
+        window: BrowserWindow.fromWebContents(event.sender)
+    });
+});
+
+ipcMain.handle('execute-child-bridged-file', (event, filePath) => {
   // Execute the file
   exec(`"${filePath}"`, (error, stdout, stderr) => {
       if (error) {
@@ -125,6 +246,20 @@ ipcMain.handle('execute-bridged-file', (event, filePath) => {
   });
 
 });
+ipcMain.handle('spawn-bridged-file', (event, filePath) => {
+    try {
+
+        const childProcess = spawn(filePath, [], { detached: true, stdio: 'ignore' });
+        
+        // Detach the child process so it can run independently
+        childProcess.unref();
+        
+        return 'File execution started';
+      } catch (error) {
+        console.error('Error executing file:', error);
+        return 'Error executing file';
+      }
+  });
 ipcMain.on('start-torrent', (event, torrentId, downloadPath) => {
 
   // Assign the torrent variable in the event handler

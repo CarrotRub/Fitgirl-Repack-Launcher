@@ -2,7 +2,6 @@ const {
   contextBridge,
   ipcRenderer
 } = require('electron/renderer');
-const { link, writeFile } = require('fs');
 const path = require('path');
 global.__dirname = __dirname;
 
@@ -42,9 +41,16 @@ contextBridge.exposeInMainWorld('primaryAPI', {
     }
   },
 
+  spawnBridgedFile : (filePath) => {
+    try {
+      return ipcRenderer.invoke('spawn-bridged-file', filePath)
+    } catch (error){
+      throw new Error(error)
+    }
+  },
   executeBridgedFile: (filePath) => {
     try {
-      return ipcRenderer.invoke('execute-bridged-file', filePath)
+      return ipcRenderer.invoke('execute-child-bridged-file', filePath)
     } catch (error) {
       throw new Error(error)
     }
@@ -126,5 +132,19 @@ contextBridge.exposeInMainWorld('secondaryAPI', {
     } catch (error) {
       throw new Error(error);
     }
-  }
+  },
+  /**
+   * @param {string} /Game title
+   * @param {string} /Link to image for Game
+   * @param {string} /Description of the Game.
+   * @returns {string} Path to location.
+  */
+  contextMenuLocalInstall: async (titleGame, gameImage, gameDescription) => {
+    try {
+        return ipcRenderer.invoke('show-context-menu-install-locally', titleGame, gameImage, gameDescription);
+    } catch (error) {
+        console.error(error);
+        throw new Error(error);
+    }
+}
 })

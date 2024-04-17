@@ -77,6 +77,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             infoContainer.className = 'single-info-container';
             infoContainer.textContent = desc;
 
+            imgElement.addEventListener('contextmenu', async function(event) {
+                event.preventDefault();
+                let usablePathInstalled = await secondaryAPI.contextMenuLocalInstall(title, srcPic, desc);
+            })
+
+
             const downloadButton = document.createElement('button');
             primaryAPI.readFile(downloadedGames, 'utf8')
                 .then(slideData => {
@@ -225,15 +231,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     /**
      * Asynchronous function to check game installation status and update game data inside the necessary json files.
      * I know it's inverted.
-     * @param {string} titleGame The title of the game.
+     * @param {string} myTitleGame The title of the game.
      * @param {string} imageGame The image of the game.
      * @param {string} descriptionGame The description of the game.
      */
 
-    async function checkInstallLib(imageGame, titleGame, descriptionGame) {
+    async function checkInstallLib(imageGame, myTitleGame, descriptionGame) {
         try {
             const isGameDone = sessionStorage.getItem('isDone');
-            titleGame = titleGame.replace(" [Fitgirl Repack]", "");
+            myTitleGame = myTitleGame.replace(" [FitGirl Repack]", "");
             const gameDoneData = {
                 games: []
             };
@@ -252,7 +258,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
     
             const torrentGameName = sessionStorage.getItem('torrentFolderName');
-            const isTorrentNameInJSON = gameDoneData.games.includes(titleGame);
+            const isTorrentNameInJSON = gameDoneData.games.includes(myTitleGame);
     
             if (isTorrentNameInJSON || (isGameDone === 'true' && !isTorrentNameInJSON)) {
                 console.log("Game is done. Stopping UI update, stopping torrent, and starting EXE processing.");
@@ -260,16 +266,18 @@ document.addEventListener('DOMContentLoaded', async function() {
                 await torrentAPI.stopTorrent();
     
                 if (!isTorrentNameInJSON) {
-                    gameDoneData.games.push(titleGame);
+                    myTitleGame = myTitleGame.replace(" [FitGirl Repack]", "");
+                    gameDoneData.games.push(myTitleGame);
                 }
     
-                infoDownloadedGames[torrentGameName] = {
-                    title: titleGame,
+                infoDownloadedGames[myTitleGame] = {
+                    title: myTitleGame,
                     image: imageGame,
                     description: descriptionGame
                 };
     
                 const updatedJson = JSON.stringify(gameDoneData, null, 2);
+                console.log(updatedJson)
                 const infoDownloadedGamesJson = JSON.stringify(infoDownloadedGames, null, 2);
     
                 await Promise.all([
@@ -737,11 +745,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                     imageStar.className = 'star'
                     let imageStarIcon = document.createElement('div');
                     imageStarIcon.className = 'star-icon';
-
+                    let gameTitle = gameTitles[index]
                     let imgElement = document.createElement('img');
                     imgElement.src = link;
-                    imgElement.alt = gameTitles[index];
-
+                    imgElement.alt = gameTitle;
+                    
                     imageOption.appendChild(imgElement);
                     imageOption.addEventListener('mouseover', function() {
                         let scrollPosition = window.scrollY || document.documentElement.scrollTop;
@@ -759,11 +767,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                     });
 
                     // Added a context menu after right click on an imageOption
-                    imageOption.addEventListener('contextmenu', function(event) {
-                        event.preventDefault();
-                        secondaryAPI.contextMenuGame()
-                    })
-
+                    primaryAPI.readFileSync(descsPath, 'utf-8')
+                        .then((descIndex)=> {
+                            imageOption.addEventListener('contextmenu', function(event) {
+                                event.preventDefault();
+                                secondaryAPI.contextMenuLocalInstall(gameTitle, link, descIndex[index] );
+                            })
+        
+                        })
                     // Animation for the game bg
                     imageOption.addEventListener('mouseout', function() {
                         let blurOverlay = fitgirlLauncher.querySelector('.blur-overlay');

@@ -9,35 +9,9 @@ const titlesTempPath = path.resolve(__dirname, '../../private/temp/titles.tmp');
 const picTempPath = path.resolve(__dirname, '../../private/temp/pic.tmp');
 const magnetLinksTempPath = path.resolve(__dirname, '../../private/temp/magnet_links.tmp');
 const descTempPath = path.resolve(__dirname, '../../private/temp/descs.json');
-const downloadedGames = path.resolve(__dirname, '../../private/library/downloaded_games.json');
-const infoDownloadedGamesFile = path.resolve(__dirname, '../../private/library/info_downloaded_games.json')
-
-var exec = require('child_process').execFile;
-
-// Function to spawn the C++ child process
-function runCppProcess() {
-    const cppExecutable = './app/display_image.exe'; 
-
-
-    const childProcess = exec(cppExecutable, function(err, data){
-      console.log(err)
-      console.log(data.toString)
-    });
-    console.log("ran it")
-    // Return the child process object
-    return childProcess;
-}
-
-
-const cppProcess = runCppProcess();
-
-// To close the C++ process when needed:
-function closeCppProcess() {
-    if (cppProcess && !cppProcess.killed) {
-        cppProcess.kill(); // Send the SIGTERM signal to terminate the process
-        console.log('C++ process terminated.');
-    }
-}
+const downloadedGamesPath = path.resolve(__dirname, '../../private/library/downloaded_games.json');
+const infoDownloadedGamesFilePath = path.resolve(__dirname, '../../private/library/info_downloaded_games.json');
+const locallyInstalledGamesPath = path.resolve(__dirname, '../../private/library/locally_installed_games.json');
 
 const isFileNotEmpty = (TempPaths) => {
   try {
@@ -216,27 +190,39 @@ const writingData = async () => {
     if (err) throw err;
     console.log("Saved Descriptions");
   });
-  if (!fs.existsSync(downloadedGames)) {
+  if (!fs.existsSync(downloadedGamesPath)) {
     try {
-      fs.writeFile(downloadedGames, '', function(err){
+      fs.writeFile(downloadedGamesPath, '', function(err){
         if (err) throw err;
         console.log("Created file")
       });
     } catch (error) {
       throw new Error(error)
     }
-  }
+  };
 
-  if (!fs.existsSync(infoDownloadedGamesFile)) {
+  if (!fs.existsSync(infoDownloadedGamesFilePath)) {
     try {
-      fs.writeFile(infoDownloadedGamesFile, '', function(err){
+      fs.writeFile(infoDownloadedGamesFilePath, '', function(err){
         if (err) throw err;
         console.log("Created file")
       });
     } catch (error) {
       throw new Error(error)
     }
-  }
+  };
+
+  if (!fs.existsSync(locallyInstalledGamesPath)) {
+    try {
+      fs.writeFile(locallyInstalledGamesPath, '', function(err){
+        if (err) throw err;
+        console.log("Created file")
+      });
+    } catch (error) {
+      throw new Error(error)
+    }
+  };
+
 };
 async function downloadSitemap(url, filename) {
   try {
@@ -281,7 +267,7 @@ for (let i = 0; i < 5; i++) {
 }
 (async () => {
   try {
-    if (isFileNotEmpty([titlesTempPath, picTempPath, descTempPath, magnetLinksTempPath, downloadedGames, infoDownloadedGamesFile])) {
+    if (isFileNotEmpty([titlesTempPath, picTempPath, descTempPath, magnetLinksTempPath, downloadedGamesPath, infoDownloadedGamesFilePath, locallyInstalledGamesPath])) {
       if (shouldRunFunction()) {
         //cppProcess
         writingData();

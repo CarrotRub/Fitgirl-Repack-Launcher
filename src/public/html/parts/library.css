@@ -252,6 +252,13 @@
     margin-top: 5px;
   }
   
+  .image-option svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+  }
+  
   .sliding-window {
     display: flex;
     position: fixed;
@@ -281,7 +288,7 @@
   }
   
   .sliding-image {
-    width: 45%;
+    width: 90%;
     height: auto;
     display: block;
     margin: auto;
@@ -483,5 +490,13 @@
 
 
   /* PART OF LIBRARY WINDOW */
-
+  .start-button{
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #761c7e;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
   

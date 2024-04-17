@@ -13,10 +13,12 @@ https://discord.gg/mXkC2Egwng
 
 To install and run the application locally, follow these steps:
 
-    1. Clone this repository to your local machine.
-    2. Navigate to the project directory.
-    3. Run `npm install` to install the necessary dependencies.
-    4. Run `npm start` to start the application.
+    1. Run cmd. (To be able to run games, the cmd has to be in admin.)
+    2. Clone this repository to your local machine.
+    3. Navigate to the project directory.
+    4. Run `npm install` to install the necessary dependencies.
+    5. Run `npm start` to start the application.
+
 
 ### Example
 To install you have to get Node JS on your computer.
@@ -51,7 +53,7 @@ Once the application is running, you can:
 
     - Download games from FitGirl Repacks.
     - Manage settings such as theme, download location, and seeding options (Working on it...).
-    - View downloaded games in the library and mark them as favorites (Working on it...).
+    - View downloaded games in the library, install them and start them directly from the library.
     - Access the favorites page to see your favorite games (Working on it...).
 
 ## Images
@@ -63,6 +65,8 @@ Here are some screenshots of the FitGirl Launcher App:
 ![Screenshot 3](src/private/images/Screenshot3.png)
 ![Screenshot 4](src/private/images/Screenshot4.png)
 ![Screenshot 5](src/private/images/Screenshot5.png)
+![Screenshot 6](src/private/images/Screenshot6.png)
+![Screenshot 7](src/private/images/Screenshot7.png)
 
 ## Todo List
 
@@ -76,7 +80,7 @@ Here are some screenshots of the FitGirl Launcher App:
 ### Library Page
 
 - [x]  Make downloaded games appear in the library.
-- [ ]  Add checkmark to downloaded games in the library.
+- [x]  Add checkmark to downloaded games in the library.
 
 ### Favorites Page
 

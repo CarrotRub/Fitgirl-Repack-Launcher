@@ -203,7 +203,7 @@ const writingData = async () => {
 
   if (!fs.existsSync(infoDownloadedGamesFilePath)) {
     try {
-      fs.writeFile(infoDownloadedGamesFilePath, '', function(err){
+      fs.writeFile(infoDownloadedGamesFilePath, '{}', function(err){
         if (err) throw err;
         console.log("Created file")
       });
@@ -214,7 +214,7 @@ const writingData = async () => {
 
   if (!fs.existsSync(locallyInstalledGamesPath)) {
     try {
-      fs.writeFile(locallyInstalledGamesPath, '', function(err){
+      fs.writeFile(locallyInstalledGamesPath, '{}', function(err){
         if (err) throw err;
         console.log("Created file")
       });

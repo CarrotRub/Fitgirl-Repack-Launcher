@@ -15,7 +15,7 @@
   
   @font-face {
     font-family: satoshiFontMedium;
-    src: url(../Satoshi-Medium.otf);
+    src: url(../../../fonts/Satoshi-Medium.otf);
   }
   
   body {
@@ -31,21 +31,21 @@
     height: 100vh;
   }
   
-  .game-container::-webkit-scrollbar,
+  .favorites-container::-webkit-scrollbar,
   .sliding-window::-webkit-scrollbar {
     width: 10px;
     background-color: #5514326b;
   }
   
   /* Track */
-  .game-container::-webkit-scrollbar-track,
+  .favorites-container::-webkit-scrollbar-track,
   .sliding-window::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.39);
     border-radius: 10px;
   }
   
   /* Handle */
-  .game-container::-webkit-scrollbar-thumb,
+  .favorites-container::-webkit-scrollbar-thumb,
   .sliding-window::-webkit-scrollbar-thumb {
     background-color: #7c204b;
     border-radius: 10px;
@@ -252,13 +252,6 @@
     margin-top: 5px;
   }
   
-  .image-option svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-  }
-  
   .sliding-window {
     display: flex;
     position: fixed;
@@ -288,7 +281,7 @@
   }
   
   .sliding-image {
-    width: 90%;
+    width: 45%;
     height: auto;
     display: block;
     margin: auto;
@@ -467,7 +460,7 @@
   
   
   
-  /* PART OF THE SINGLE GAME WINDOW*/
+  /* PART OF THE SINGLE GAME WINDOW ONLY !*/
   
   .single-sliding-image {
     width: 25%;
@@ -489,14 +482,66 @@
   }
 
 
-  /* PART OF LIBRARY WINDOW */
-  .start-button{
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #761c7e;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+
+ /* PART OF THE SINGLE GAME WINDOW ONLY !*/
+  
+  .single-sliding-image {
+    width: 25%;
+    height: auto;
+    display: block;
+    margin: auto;
+    margin-top: 5%;
+    border-radius: 8px;
+    box-shadow: -1px 1px 14px 14px rgb(241 244 245 / 21%);
   }
   
+  .info-container {
+    margin: 2em 0;
+    font-family: inherit;
+    padding-top: 2em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    white-space: pre-wrap;
+  }
+
+
+  /* Favorite Games Section */
+
+  .favorites-flex {
+    padding-left: 10px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    display: flex;
+    gap: 5%;
+    justify-content: center; /* Center the items horizontally */
+    align-items: center; /* Center the items vertically */
+    flex-direction: row;
+    margin-bottom: 70em;
+  }
+  
+  .favorites-container {
+    padding-top: 120px;
+    padding-left: 120px;
+    flex: 1;
+    z-index: 1;
+    width: 100%;
+    list-style: none;
+    overflow: hidden;
+    height: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-y: scroll;
+    position: absolute;
+  }
+  
+  .list-favorites {
+    list-style: none;
+  }
+
+/* Highlight menu button depending on selection*/
+.selected-icon {
+    background-color: rgba(255, 255, 255, 0.672);
+    border-radius: 14px;
+}
+ 

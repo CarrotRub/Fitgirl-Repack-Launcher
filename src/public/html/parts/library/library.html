@@ -5,12 +5,12 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FitGirl Repack Launcher</title>
-  <link rel="stylesheet" href="library.css">
-  <script src="../scripts/libraryprocess.js"></script>
+  <link rel="stylesheet" href="../library/library.css">
+  <script src="../../scripts/libraryprocess.js"></script>
+
   <script src="https://cdn.jsdelivr.net/webtorrent/latest/webtorrent.min.js"></script>
   <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
 </head>
 
 <body>
@@ -22,13 +22,12 @@
     <div class="sidebar">
       <div class="logo-container">
         <div class="logo">
-            <img src="../../../private/icons/fitgirl-1-2556418794.png" alt="logo">
-        </div>
+          <img src="../../../../private/icons/fitgirl-1-2556418794.png" alt="logo">        </div>
       </div>
       <ul >
         <div class="threeGuys">
-        <li class="homePage">
-          <a href="../index.html">
+        <li class="homePage" data-icon="homePage">
+          <a href="../../index.html">
             <div >  
               <svg width="31" height="24" viewBox="0 0 31 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g id="HomeLogo">
@@ -42,8 +41,8 @@
           </a> 
         </li>
 
-        <li class="libraryPage">
-          <a href="#library">
+        <li class="libraryPage" data-icon="libraryPage">
+          <a href="../library/library.html">
             <div >  
               <svg width="31" height="24" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path id="Library"
@@ -54,8 +53,11 @@
           </a> 
         </li>
 
-        <li class="favoritesPage">
-          <a href="#favorites">
+        <!-- Library section -->
+        
+
+        <li class="favoritesPage" data-icon="favoritesPage">
+          <a href="../favorites/favorites.html">
             <div >  
               <svg width="31" height="24" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M28 28L14.5 19.6923L1 28V3.07692C1 2.52608 1.35559 1.99782 1.9885 1.60832C2.62145 1.21882 3.47988 1 4.375 1H24.625C25.52 1 26.3786 1.21882 27.0115 1.60832C27.6443 1.99782 28 2.52608 28 3.07692V28Z" 
@@ -65,8 +67,8 @@
           </a> 
         </li>
         </div>
-        <li class="settingsPage">
-          <a href="settings.html">
+        <li class="settingsPage" data-icon="settingsPage"> 
+          <a href="../settings/settings.html">
             <div>  
               <svg width="31" height="24" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11.3711 5.96341L12.3438 3.65803C12.5078 3.2677 12.7964 2.93196 13.1718 2.69478C13.5472 2.45759 13.9918 2.33003 14.4475 2.3288H16.3024C16.7581 2.33003 17.2028 2.45759 17.5781 2.69478C17.9535 2.93196 18.2421 3.2677 18.4062 3.65803L19.3789 5.96341L22.6814 7.70803L25.3507 7.33418C25.7952 7.27879 26.2476 7.34596 26.6505 7.52717C27.0531 7.70838 27.3881 7.99543 27.6128 8.35187L28.5176 9.80572C28.7495 10.1678 28.8564 10.586 28.8241 11.005C28.7918 11.424 28.6219 11.8241 28.3366 12.1526L26.6853 14.0842V17.5734L28.3819 19.505C28.6671 19.8335 28.837 20.2336 28.8693 20.6526C28.9017 21.0716 28.7947 21.4898 28.5628 21.8519L27.658 23.3057C27.4334 23.6621 27.0984 23.9492 26.6957 24.1305C26.2928 24.3116 25.8404 24.3789 25.3959 24.3234L22.7267 23.9496L19.4241 25.6942L18.4514 27.9996C18.2874 28.3898 17.9988 28.7257 17.6234 28.9628C17.248 29.2 16.8033 29.3276 16.3477 29.3288H14.4475C13.9918 29.3276 13.5472 29.2 13.1718 28.9628C12.7964 28.7257 12.5078 28.3898 12.3438 27.9996L11.3711 25.6942L8.06844 23.9496L5.39918 24.3234C4.95473 24.3789 4.50236 24.3116 4.09957 24.1305C3.69681 23.9492 3.36179 23.6621 3.1371 23.3057L2.23227 21.8519C2.0004 21.4898 1.89359 21.0716 1.92589 20.6526C1.95819 20.2336 2.12812 19.8335 2.41323 19.505L4.06455 17.5734V14.0842L2.36799 12.1526C2.08288 11.8241 1.91295 11.424 1.88065 11.005C1.84835 10.586 1.95516 10.1678 2.18702 9.80572L3.09186 8.35187C3.31655 7.99543 3.65157 7.70838 4.05433 7.52717C4.45712 7.34596 4.90949 7.27879 5.35394 7.33418L8.0232 7.70803L11.3711 5.96341ZM10.8508 15.8288C10.8508 16.6503 11.1161 17.4535 11.6133 18.1366C12.1104 18.8197 12.817 19.352 13.6436 19.6665C14.4703 19.9808 15.38 20.0631 16.2576 19.9028C17.1352 19.7426 17.9413 19.3469 18.5741 18.766C19.2068 18.1851 19.6376 17.4449 19.8122 16.6392C19.9868 15.8334 19.8972 14.9982 19.5548 14.2392C19.2123 13.4802 18.6325 12.8314 17.8885 12.375C17.1445 11.9186 16.2698 11.675 15.375 11.675C14.1751 11.675 13.0244 12.1126 12.1759 12.8916C11.3275 13.6706 10.8508 14.7271 10.8508 15.8288Z" 
@@ -85,6 +87,7 @@
       </div>
     </div>
 
+    
 
 
 
@@ -97,6 +100,8 @@
       <div id="search-results"></div>
   </div>
 </div>
+
+ 
 
 
 

@@ -220,7 +220,7 @@ const writingData = async () => {
     console.log("Saved Descriptions");
   });
 
-  if(!isFileNotEmpty(downloadedGamesPath)){
+  if(isFileNotEmpty(downloadedGamesPath)){
     try {
       fs.writeFile(downloadedGamesPath, JSON.stringify(empytJSON, null, 2), function(err){
         if (err) throw err;
@@ -232,7 +232,7 @@ const writingData = async () => {
   }
 
 
-  if(!isFileNotEmpty(infoDownloadedGamesFilePath)){
+  if(isFileNotEmpty(infoDownloadedGamesFilePath)){
     try {
       fs.writeFile(infoDownloadedGamesFilePath, JSON.stringify(empytJSON, null, 2), function(err){
         if (err) throw err;
@@ -245,7 +245,7 @@ const writingData = async () => {
 
 
 
-  if(!isFileNotEmpty(locallyInstalledGamesPath)){
+  if(isFileNotEmpty(locallyInstalledGamesPath)){
     try {
       fs.writeFile(locallyInstalledGamesPath, JSON.stringify(empytJSON, null, 2), function(err){
         if (err) throw err;

@@ -139,9 +139,9 @@ ipcMain.handle('readLinesFromFile', async (event, filePath) => {
 });
 ipcMain.handle('show-context-menu-game', (event) => {
   const contextMenuGameTemplate = [{
-          label: 'Place it in Favorites',
+          label: 'Add To Favorites',
           click: () => {
-                console.log("Went in favorites")
+                console.log("Added To Favorites")
           }
       },
       {

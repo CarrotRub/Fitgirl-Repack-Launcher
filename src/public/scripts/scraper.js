@@ -13,6 +13,33 @@ const downloadedGamesPath = path.resolve(__dirname, '../../private/library/downl
 const infoDownloadedGamesFilePath = path.resolve(__dirname, '../../private/library/info_downloaded_games.json');
 const locallyInstalledGamesPath = path.resolve(__dirname, '../../private/library/locally_installed_games.json');
 
+/* Start of platform detection */
+// Determine if the user is using Windows or Linux and set the executable file extension accordingly
+ // Alert the user that this app is not supported on Mac/Linux platforms
+ function drawBox(message) {
+  const length = message.length + 4; // Length of the message + 4 for padding and borders
+  const border = "*".repeat(length); // Top and bottom border
+
+  console.log(border);
+  console.log(`* ${message} *`); // Message with padding and borders
+  console.log(border);
+}
+
+const isWindows = process.platform === 'win32';
+
+/* Console log the platform to verify the correct platform is being detected */
+console.log("Platform: " + process.platform);
+console.log("isWindows: " + isWindows);
+console.log("");
+
+if (isWindows) {
+  drawBox("Windows platform detected.");
+} else {
+  drawBox("Mac/Linux platform detected. \nThis app is not supported on Mac/Linux platforms for the time being.");
+}
+console.log("");
+/* End of platform detection */
+
 const isFileNotEmpty = (TempPaths) => {
   try {
     for (const TempPath of TempPaths) {

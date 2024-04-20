@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   } = window;
 
   const dirname = await primaryAPI.getDirname();
+
   const downloadedGames = primaryAPI.resolvePath(dirname, '../../src/private/library/info_downloaded_games.json');
   const installedLocallyGamesPath = primaryAPI.resolvePath(dirname, '../../src/private/library/locally_installed_games.json')
 
@@ -158,8 +159,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         returnSlideArrow.addEventListener('click', function() {
             let slidingWindow = document.querySelector('.sliding-window');
             slidingWindow.style.transform = slidingWindow.style.transform === 'translateX(100%)' ? 'translateX(0)' : 'translateX(100%)';
+            
+        // Close file explorer if open TODO:does not work :(, fix it)
+        let fileExplorer = document.querySelector('.file-explorer');
+        if (fileExplorer) {
+            fileExplorer.style.display = 'none';
+        }    
 
-        });
+
+       
+        }
+    );
+    
     }
 
       async function toggleSlidingWindow(titleO,linkO,descCO, pathExecutableO ) {

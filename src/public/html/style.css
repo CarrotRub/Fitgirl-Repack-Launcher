@@ -21,7 +21,7 @@
 body {
   font-family: satoshiFontMedium;
   background-color: var(--primary-color);
-  color: var(--text-color);
+  background-color: #01032a;
   overflow: hidden;
 }
 
@@ -51,9 +51,10 @@ body {
   border-radius: 10px;
 }
 
+/* Left side Menu bar */
 .sidebar {
-  background-color: rgb(0 0 0 / 57%);
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  background-color: #01032a;
+  box-shadow: 2px 0 5px #020425;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -89,6 +90,8 @@ body {
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 20px;
+  border: 2px solid #d3337e;
+
 }
 
 .logo img {
@@ -123,7 +126,7 @@ body {
   display: flex;
   align-items: center;
   padding: 20px;
-  justify-content: flex-end;
+  justify-content: flex-start;
   z-index: 2;
 }
 
@@ -132,17 +135,20 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 100%;
+  width: 70%;
+  background-color: #011b4c;
+  border-radius: 30px
 }
 
 .threeGuys > * {
-  margin-bottom: 3em;
+  margin-bottom: 1em;
+  margin-top: 1em;
 }
 
 .horibar {
   height: 15%;
-  background-color: rgba(0, 0, 0, 0.39);
-  backdrop-filter: blur(10px);
+  background-color: #01032a; 
+   backdrop-filter: blur(10px);
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -186,7 +192,7 @@ img {
 }
 
 .game-grid {
-  padding-left: 10px;
+  padding-left: 30px;
   padding-top: 30px;
   padding-bottom: 30px;
   grid-column: 2;
@@ -203,7 +209,6 @@ img {
   padding-left: 120px;
   flex: 1;
   z-index: 1;
-
   width: 100%;
   list-style: none;
   overflow: hidden;
@@ -213,6 +218,17 @@ img {
   align-items: flex-start;
   overflow-y: scroll;
   position: absolute;
+}
+
+.game-container-title {
+  position: fixed; /* Fixed position for the title */
+  top: 50%; /* Position at the top */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  background-color: #fff; /* Background color for the title */
+  padding: 10px 20px; /* Adjust padding as needed */
+  z-index: 1000; /* Ensure it appears above other content */
+  /* Other styles for the title */
 }
 
 .color-blur-overlay,
@@ -252,6 +268,7 @@ img {
   margin-top: 5px;
 }
 
+/* Right side : Displays game content and info */
 .sliding-window {
   display: flex;
   position: fixed;
@@ -260,7 +277,7 @@ img {
   right: 0;
   bottom: 0;
   width: 40%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #011b4c;
   overflow-y: auto;
   transform: translateX(100%);
   transition: transform 0.5s ease;
@@ -296,18 +313,27 @@ img {
   padding-left: 0.5em;
   padding-right: 0.5em;
   white-space: pre-wrap;
+  color: #d3337e;
 }
 
-.download-button,
-.downloading-button {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #761c7e;
-  color: #fff;
+/* Button styles */
+.download-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: DodgerBlue;
+  color: white;
+  text-decoration: none;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
+  font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
+
+.download-button:hover {
+  background-color: #45a049; /* Darker green */
+}
+
 
 .progress-bar-container {
   display: inline-block;
@@ -320,54 +346,113 @@ img {
 
 .progress-bar {
   height: 100%;
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: rgb(208, 136, 226);
 }
 
+/* Path window styles */
 .pathWindow {
-  display: flex;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40%;
-  background-color: rgba(0, 0, 0, 0.8);
-  overflow-y: auto;
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
+  width: 80%;
+  max-width: 600px;
+  background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-.pathLabel {
-  display: flex;
-  color: white;
-  font-size: 16px;
-  flex-direction: row;
-  justify-content: space-around;
-}
-.pathContainer {
-  display: flex;
-  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   padding: 20px;
-  align-items: center;
-  flex-direction: row-reverse;
+  z-index: 1000;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
 }
+
+.pathLabel {
+  display: block;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 16px;
+}
+
+#pathID {
+  flex: 1;
+  margin-right: 10px; /* Add margin between input and button */
+}
+
+/* Path window styles */
+.pathWindow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 600px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1000;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+}
+
+/* Button container for OK and Cancel buttons */
+.buttonContainer {
+  display: flex;
+  gap: 10px; /* Add some space between buttons */
+}
+
+/* OK and Cancel Button Styles */
+.PathOkButton,
+.PathCancelButton {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-right: 10px; /* Add margin between buttons */
+  background-color: #d3337e; /* OK button color */
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.PathCancelButton {
+  background-color: #ececec; /* Cancel button color */
+  color: #000;
+}
+
+/* Hover Styles */
+.PathOkButton:hover,
+.PathCancelButton:hover {
+  background-color: #d32978; /* OK button hover color */
+  background-color: #dcd9d9; /* Cancel button hover color */
+}
+
+.pathInputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px; /* Add margin for spacing */
+}
+
+
+
+
+
 
 /* Thanks to uiverse.io for this :)*/
 .setting-btn {
-  width: 45px;
-  height: 45px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background-color: rgb(129, 110, 216);
-  border-radius: 10px;
+  width: auto; /* Let the button size adjust based on content */
+  border-radius: 5px;
+  background-color: rgb(70, 70, 189);
+  color: white;
+  padding: 10px 20px;
   cursor: pointer;
-  border: none;
-  box-shadow: 0px 0px 0px 2px rgb(212, 209, 255);
 }
 
 .bar {
@@ -411,98 +496,90 @@ img {
 }
 
 
+
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+
+.search__input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #f4f2f2;
+  border-color: #d3337e;
+  color: #646464;
+  padding: 0.7rem 1rem;
+  border-radius: 30px;
+  width: 20em;
+  transition: all ease-in-out .5s;
+  margin-right: -2rem;
+}
+
+.search__input:hover, .search__input:focus {
+  box-shadow: 0 0 1em #d3337e;
+}
+
+.search__input:focus {
+  outline: none;
+  background-color: #f0eeee;
+}
+
+.search__input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #ccc;
+}
+
+.search__input:focus + .search__button {
+  background-color: #f0eeee;
+}
+
+.search__button {
+  border: none;
+  background-color: #f4f2f2;
+  margin-top: .1em;
+}
+
+.search__button:hover {
+  cursor: pointer;
+}
+
+.search__icon {
+  height: 1.3em;
+  width: 1.3em;
+  fill: #d3337e;
+}
+
+/* Search results container */
 #search-results {
   position: absolute;
-  width: calc(100% - 20px);
-  background-color: rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-  padding: 5px;
-  box-sizing: border-box;
+  background-color: #011b4c;
+  border-radius: 15px;
+  padding: 10px;
   z-index: 999;
-  display: none;
+  display: inline-block;
   top: calc(100% + 5px);
   left: 0;
 }
 
+/* Show search results when input is focused */
+.search__input:focus + .form__label + #search-results {
+  display: block;
+}
+
+/* Styling for search results links */
 #search-results a {
   display: block;
-  color: var(--accent-color);
+  color: #fff;
   text-decoration: none;
   margin-bottom: 5px;
 }
 
-#search-results a:nth-child(n + 6) {
-  display: none;
+#search-results a:hover {
+  text-decoration: underline;
 }
-
-.form__group {
-  position: relative;
-  padding: 20px 0 0;
-  width: 100%;
-  max-width: 180px;
-}
-
-.form__field {
-  font-family: inherit;
-  width: 100%;
-  border: none;
-  border-bottom: 2px solid #d3337e;
-  outline: 0;
-  font-size: 15px;
-  color: #fff;
-  padding: 7px 0;
-  background: transparent;
-  transition: border-color 0.2s;
-}
-
-.form__field::placeholder {
-  color: transparent;
-}
-
-.form__field:placeholder-shown ~ .form__label {
-  font-size: 17px;
-  cursor: text;
-  top: 20px;
-}
-
-.form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 17px;
-  color: #d3337e;
-  pointer-events: none;
-}
-
-.form__field:focus {
-  padding-bottom: 6px;
-  font-weight: 700;
-  border-width: 3px;
-  border-image: linear-gradient(to right, #d3337e, #7c204b);
-  border-image-slice: 1;
-}
-
-.form__field:focus ~ .form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 17px;
-  color: #d84f8f;
-  font-weight: 700;
-}
-
-/* reset input */
-.form__field:required,
-.form__field:invalid {
-  box-shadow: none;
-}
-
-.form__group input:focus + #search-results {
-  display: block;
-}
-
 
 
 

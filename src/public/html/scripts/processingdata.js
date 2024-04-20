@@ -84,6 +84,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
             const downloadButton = document.createElement('button');
+            downloadButton.className = 'download-button';
+            downloadButton.textContent = 'Download';
+       
+            
+            
             primaryAPI.readFile(downloadedGames, 'utf8')
                 .then(slideData => {
                     console.log("File data successfully read:", slideData);
@@ -97,6 +102,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                         console.error("Error parsing JSON:", error);
                         return;
                     }
+                    downloadButton.addEventListener('click', function() {
+                        console.log('Download button clicked');
+                    });
                     downloadButton.className = 'download-button';
                     if (isDownloading && sessionStorage.getItem('torrentCheckMagnet') === magnetLink) {
                         downloadButton.textContent = 'Stop Downloading';
@@ -106,6 +114,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                         downloadButton.textContent = 'Install';
                     } else {
                         downloadButton.textContent = 'Download';
+                        downloadButton.addEventListener('click', function() {
+                            console.log('Download button clicked2');
+                        });
                     };
                 })
                 .catch(error => {
@@ -143,6 +154,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
             downloadButton.addEventListener('click', async function() {
+                console.log("button clicked");
                 if (!isDownloading) {
                     console.log("should NOT be destroying bbg")
                     console.log(magnetLink)
@@ -168,6 +180,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     stopUIUpdate();
 
                     downloadButton.textContent = "Download";
+                    console.log("clicked 1");
 
                     isDownloading = false;
                 }
@@ -309,7 +322,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         let uploadSpeed = sessionStorage.getItem('uploadSpeed');
         let totalSize = sessionStorage.getItem('totalSize');
         let timeRemaining = sessionStorage.getItem('timeRemaining');
-        let progressBar = sessionStorage.getItem('progressBar');
+        let progressBar = sessionStorage.getItem('progressBar');arrow
         let downloadedSize = sessionStorage.getItem('downloadedSize');
         let peers = sessionStorage.getItem('peers');
 
@@ -357,120 +370,121 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
 
-    /**
-     * Toggles a path selection window asynchronously.
-     * @param {string} magnetlink The magnet link.
-     * @returns {Promise<boolean|{pathWindow: HTMLElement, inputValue: string}>} A promise resolving to either false if canceled or an object containing the path window element and the selected path.
-     */
-    async function togglePathWindowAsync(magnetlink, titleGame, imageGame, descriptionGame) {
-        return new Promise(async resolve => {
-            let pathWindow = document.createElement('div');
-            pathWindow.className = 'pathWindow';
-            pathWindow.style.position = 'fixed';
-            pathWindow.style.top = '50%';
-            pathWindow.style.left = '50%';
-            pathWindow.style.transform = 'translate(-50%, -50%)';
+ /**
+ * Toggles a path selection window asynchronously.
+ * @param {string} magnetlink The magnet link.
+ * @returns {Promise<boolean|{pathWindow: HTMLElement, inputValue: string}>} A promise resolving to either false if canceled or an object containing the path window element and the selected path.
+ */
+ async function togglePathWindowAsync(magnetlink, titleGame, imageGame, descriptionGame) {
+    return new Promise(async resolve => {
+        let pathWindow = document.createElement('div');
+        pathWindow.className = 'pathWindow';
+        pathWindow.style.position = 'fixed';
+        pathWindow.style.top = '50%';
+        pathWindow.style.left = '50%';
+        pathWindow.style.transform = 'translate(-50%, -50%)';
 
+        let pathInputLabel = document.createElement('label');
+        pathInputLabel.className = 'pathLabel';
+        pathInputLabel.textContent = 'Choose Install Location';
+        pathWindow.appendChild(pathInputLabel);
 
-            let pathContainer = document.createElement('div');
-            pathContainer.className = 'pathContainer';
-            let pathInput = document.createElement('input');
-            pathInput.id = 'pathID';
-            let lastInputPath = localStorage.getItem("lastPath");
-            pathInput.value = lastInputPath;
-            let pathInputLabel = document.createElement('label');
-            pathInputLabel.className = 'pathLabel';
-            pathInputLabel.textContent = 'Game Path : ';
-            let folderInput = document.createElement('button');
-            let spanbar1 = document.createElement('span');
-            spanbar1.className = 'bar bar1';
-            let spanbar2 = document.createElement('span');
-            spanbar2.className = 'bar bar2';
-            let spanbar1_2 = document.createElement('span');
-            spanbar1_2.className = 'bar bar1';
-            folderInput.appendChild(spanbar1);
-            folderInput.appendChild(spanbar2);
-            folderInput.appendChild(spanbar1_2);
-            folderInput.className = 'setting-btn';
+        let pathInputContainer = document.createElement('div');
+        pathInputContainer.className = 'pathInputContainer';
+        pathWindow.appendChild(pathInputContainer);
 
+        let pathInput = document.createElement('input');
+        pathInput.id = 'pathID';
+        pathInput.placeholder = 'Ex. C:\\Program Files';
+        let lastInputPath = localStorage.getItem("lastPath");
+        pathInput.value = lastInputPath;
+        pathInputContainer.appendChild(pathInput);
 
-
-            // Add event listener to hidden input for folder selection
-            folderInput.addEventListener('change', function() {
-
-            });
-
-            // Event listener for closing path window
-            pathWindow.addEventListener('keyup', function(event) {
-                if (event.isComposing || event.key === "Escape") {
-                    console.log("escaped");
-                    pathWindow.remove();
-                    resolve(false);
-                }
-            });
-
-
-            // Add event listener to button to trigger folder input
-            folderInput.addEventListener('click', async function(event) {
-                try {
-                    console.log("start")
-                    let selectedFolder = await primaryAPI.openPathDir(); // Get the path of the selected folder
-                    console.log(selectedFolder)
-                    pathInput.value = selectedFolder;
-                } catch (error) {
-                    throw new Error(error)
-                }
-            });
-
-            pathInput.addEventListener('keyup', async function(event) {
-                if (event.isComposing || event.key === "Enter") {
-                    let inputValue = pathInput.value;
-                    console.log('Entered value:', inputValue);
-                    pathWindow.remove();
-                    console.log(magnetlink);
-
-                    // Call startTorrent to start the webtorrent client and open the channel for sending the data
-                    try {
-
-                        await window.torrentAPI.startTorrent(magnetlink, inputValue);
-
-                        // Place the data on Interval inside the sessionStorage.
-
-                        updatingTorrent();
-                        try {
-
-                            startUIDownloadUpdate(titleGame, imageGame, descriptionGame)
-
-                        } catch (error) {
-                            throw new Error(error)
-                        }
-
-                    } catch (error) {
-                        console.error('Error initializing WebTorrent:', error);
-                    }
-
-                    resolve({
-                        pathWindow: pathWindow,
-                        inputValue: pathInput.value,
-
-                    });
-
-                } else if (event.isComposing || event.key === "Escape") {
-                    console.log("escaped");
-                    pathWindow.remove();
-                    resolve(false);
-                }
-            });
-            sessionStorage.setItem("actualPathInput", pathInput.value)
-            pathContainer.appendChild(pathInput);
-            pathWindow.appendChild(pathContainer);
-            pathWindow.appendChild(folderInput);
-            pathContainer.appendChild(pathInputLabel);
-            document.body.appendChild(pathWindow);
-
-
+        let folderInput = document.createElement('button');
+        folderInput.textContent = 'Browse';
+        folderInput.className = 'setting-btn';
+        folderInput.addEventListener('click', async () => {
+            try {
+                console.log("start");
+                let selectedFolder = await primaryAPI.openPathDir(); // Get the path of the selected folder
+                console.log(selectedFolder);
+                pathInput.value = selectedFolder;
+            } catch (error) {
+                throw new Error(error);
+            }
         });
-    }
+        pathInputContainer.appendChild(folderInput);
+
+        let buttonContainer = document.createElement('div');
+        buttonContainer.className = 'buttonContainer'; // Container for OK and Cancel buttons
+        pathWindow.appendChild(buttonContainer);
+
+        let okButton = document.createElement('button');
+        okButton.textContent = 'Install';
+        okButton.className = 'PathOkButton'; 
+        okButton.addEventListener('click', async () => {
+            let inputValue = pathInput.value;
+            console.log('Entered value:', inputValue);
+            pathWindow.remove();
+
+            try {
+                await window.torrentAPI.startTorrent(magnetlink, inputValue);
+                updatingTorrent();
+                startUIDownloadUpdate(titleGame, imageGame, descriptionGame);
+            } catch (error) {
+                console.error('Error initializing WebTorrent:', error);
+            }
+
+            resolve({
+                pathWindow: pathWindow,
+                inputValue: inputValue,
+            });
+        });
+        buttonContainer.appendChild(okButton);
+
+        let cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.className = 'PathCancelButton';
+        cancelButton.addEventListener('click', () => {
+            console.log("Canceled path selection.");
+            pathWindow.remove();
+            resolve(false);
+        });
+        buttonContainer.appendChild(cancelButton);
+
+        pathInput.addEventListener('keyup', async (event) => {
+            if (event.isComposing || event.key === "Enter") {
+                let inputValue = pathInput.value;
+                console.log('Entered value:', inputValue);
+                pathWindow.remove();
+
+                try {
+                    await window.torrentAPI.startTorrent(magnetlink, inputValue);
+                    updatingTorrent();
+                    startUIDownloadUpdate(titleGame, imageGame, descriptionGame);
+                } catch (error) {
+                    console.error('Error initializing WebTorrent:', error);
+                }
+
+                resolve({
+                    pathWindow: pathWindow,
+                    inputValue: inputValue,
+                });
+            } else if (event.isComposing || event.key === "Escape") {
+                console.log("escaped");
+                pathWindow.remove();
+                resolve(false);
+            }
+        });
+
+        document.body.appendChild(pathWindow);
+        pathInput.focus(); // Set focus to the input field when the window opens
+    });
+}
+
+
+
+
 
     /**
      * Populates the image grid with game images.
@@ -620,6 +634,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             infoContainer.textContent = descsContent.info;
 
             downloadButton.className = 'download-button';
+            downloadButton.textContent = 'Download';
+
             primaryAPI.readFile(downloadedGames, 'utf8')
                 .then(slideData => {
                     console.log("File data successfully read:", slideData);
@@ -638,6 +654,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                     if (isDownloading && torrentedMagnet === magnetlink) {
                         downloadButton.textContent = 'Stop Downloading';
+                        downloadButton.style.backgroundColor = 'red';
                     } else if (!isDownloading && torrentedMagnet === magnetlink) {
                         downloadButton.textContent = 'Continue Download';
                     } else if (isUITorrentNameInJSON) {
@@ -713,6 +730,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     } else {
                         console.log('User selected a path:', result.inputValue);
                         downloadButton.textContent = 'Stop Downloading';
+                        downloadButton.style.backgroundColor = 'red';
                         downloadButton.className = 'downloading-button';
 
                         isDownloading = true;

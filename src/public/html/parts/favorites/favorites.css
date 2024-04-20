@@ -21,7 +21,7 @@
   body {
     font-family: satoshiFontMedium;
     background-color: var(--primary-color);
-    color: var(--text-color);
+    background-color: #01032a;
     overflow: hidden;
   }
   
@@ -52,7 +52,7 @@
   }
   
   .sidebar {
-    background-color: rgb(0 0 0 / 57%);
+    background-color: #01032a;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -89,6 +89,8 @@
     border-radius: 50%;
     overflow: hidden;
     margin-bottom: 20px;
+    border: 2px solid #d3337e;
+
   }
   
   .logo img {
@@ -123,7 +125,7 @@
     display: flex;
     align-items: center;
     padding: 20px;
-    justify-content: flex-end;
+    justify-content: flex-start;
     z-index: 2;
   }
   
@@ -132,16 +134,19 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 100%;
+    width: 70%;
+    background-color: #011b4c;
+    border-radius: 30px
   }
   
-  .threeGuys > * {
-    margin-bottom: 3em;
-  }
+ .threeGuys > * {
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
   
   .horibar {
     height: 15%;
-    background-color: rgba(0, 0, 0, 0.39);
+    background-color: #01032a;
     backdrop-filter: blur(10px);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   }

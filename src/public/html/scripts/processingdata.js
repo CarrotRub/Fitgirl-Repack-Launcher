@@ -337,10 +337,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         let varActualInput = sessionStorage.getItem('actualPathInput');
         let gameFolderPathEXE = varActualInput + torrentFolderName + '/' + 'setup.exe';
 
-        primaryAPI.executeBridgedFile(gameFolderPathEXE);
+        try {
+            primaryAPI.executeBridgedFile(gameFolderPathEXE);
+        } catch (error) {
+            throw new Error("Error in Game Path",error);
+        }
         await new Promise(r => setTimeout(r, 10000));
         console.log(autoInstallerPath);
-        primaryAPI.executeBridgedFile(autoInstallerPath);
+        try {
+            primaryAPI.executeBridgedFile(autoInstallerPath);
+        } catch (error) {
+            throw new Error(error)
+        }
 
     }
 

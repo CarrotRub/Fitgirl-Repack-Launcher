@@ -145,8 +145,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         startButton.textContent = 'Start Game';
 
         startButton.addEventListener('click', async function() {
-          primaryAPI.spawnBridgedFile(pathExecutable)
-        });
+            try {
+                primaryAPI.spawnBridgedFile(pathExecutable)
+              } catch (error) {
+                throw new Error(error)
+              }
+            });	      
+    
+    
 
         slidingWindow.appendChild(contentContainer);
         contentContainer.appendChild(imgElement);

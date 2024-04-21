@@ -21,8 +21,9 @@
 body {
   font-family: satoshiFontMedium;
   background-color: var(--primary-color);
-  background-color: #01032a;
   overflow: hidden;
+  color: white; /* TODO might need to change this as its a lazy way of doing it */
+
 }
 
 /* Container styles */
@@ -69,9 +70,9 @@ body {
   background-color: #7c204b;
   border-radius: 10px;
 }
-
+/* Left side Menu bar */
 .sidebar {
-  background-color: #01032a;
+  background-color: rgb(0 0 0 / 57%);
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -96,7 +97,7 @@ body {
   align-items: center; /* Vertically center the content */
   margin-top: auto;
   border-radius: 20px;
-  background-color: #011b4c;
+  background-color: rgb(20, 20, 20);
   padding: 10px;
 }
 
@@ -149,18 +150,20 @@ body {
   flex-grow: 1;
   display: flex;
   align-items: center;
-  padding: 20px;
-  justify-content: flex-start;  z-index: 2;
+  padding: 10px;
+  justify-content: flex-start;
+  z-index: 2;
 }
-
 .threeGuys {
   flex-direction: column;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 70%;
-  background-color: #011b4c;
-  border-radius: 30px
+  background-color: rgb(20, 20, 20);
+  box-shadow: 2px 0 5px rgba(27, 27, 27, 0.1);
+  border-radius: 30px;
+  
 }
 
 .threeGuys > * {
@@ -168,12 +171,11 @@ body {
   margin-top: 1em;
 }
 
-.horibar {
-  height: 15%;
-  background-color: none;
-  backdrop-filter: blur(10px);
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-}
+ .horibar {
+    height: 15%;
+    background-color: transparent; 
+     backdrop-filter: blur(0px);
+  }
 
 .horibar ul {
   list-style: none;
@@ -192,11 +194,11 @@ body {
 }
 
 
+/* Image inside of the grid */
 .image-option {
-  border: 1px solid #ddd;
-  padding: 10px;
+  border: 2px solid pink;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
@@ -210,16 +212,14 @@ body {
 }
 
 .game-grid {
-  padding-left: 10px;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding: 15px;
   grid-column: 2;
   display: grid;
-  gap: 5%;
+  gap: 2%;
   grid-template-columns: repeat(auto-fill, minmax(15%, 1fr));
   justify-items: start;
   z-index: 0;
-  margin-bottom: 7em;
+  margin-bottom: 20em;
 }
 
 .game-container {
@@ -310,7 +310,7 @@ body {
 }
 
 .sliding-image {
-  width: 90%;
+  width: 45%;
   height: auto;
   display: block;
   margin: auto;
@@ -318,14 +318,6 @@ body {
   box-shadow: -1px 1px 14px 14px rgb(241 244 245 / 21%);
 }
 
-.info-container {
-  margin: 2em 0;
-  font-family: inherit;
-  padding-top: 2em;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-  white-space: pre-wrap;
-}
 
 .download-button,
 .downloading-button {
@@ -342,10 +334,11 @@ body {
 .progress-bar-container {
   display: inline-block;
   width: 90%;
-  height: 20px;
-  border-radius: 5px;
+  height: 10px;
+  border-radius: 2px;
   background-color: #761c7e;
-  margin-top: 10px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .progress-bar {
@@ -457,6 +450,8 @@ img {
 
 /* Search results container */
 #search-results {
+  margin-left: 15px;
+
   position: absolute;
   background-color: #011b4c;
   border-radius: 15px;
@@ -547,12 +542,25 @@ img {
 }
 
 .info-container {
-  margin: 2em 0;
+  margin: 1em 0;
   font-family: inherit;
-  padding-top: 2em;
+  padding-top: 0.5em;
   padding-left: 0.5em;
   padding-right: 0.5em;
   white-space: pre-wrap;
+  color: pink;
+}
+
+/* Footer styles */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #01032a;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
 }
   /* PART OF LIBRARY WINDOW */
   .start-button{

@@ -202,7 +202,7 @@ ipcMain.handle('show-context-menu-game', (event) => {
 });
 ipcMain.handle('show-context-menu-install-locally', async (event, titleGame, gameImage, gameDescription) => {
     const contextMenuInstallTemplate = [{
-        label: 'Add it locally !',
+        label: 'Add A Game Locally',
         click: async () => {
             try {
                 const returnedGamePath = await openFolderExecutable();

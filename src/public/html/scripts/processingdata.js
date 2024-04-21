@@ -513,12 +513,12 @@ pinkTextElements.forEach(element => {
                 resolve(false);
             }
         });
-        sessionStorage.setItem("actualPathInput", pathInput.value)
-            pathContainer.appendChild(pathInput);
-            pathWindow.appendChild(pathContainer);
-            pathWindow.appendChild(folderInput);
-            pathContainer.appendChild(pathInputLabel);
-            document.body.appendChild(pathWindow);
+        // sessionStorage.setItem("actualPathInput", pathInput.value)
+        //     pathContainer.appendChild(pathInput);
+        //     pathWindow.appendChild(pathContainer);
+        //     pathWindow.appendChild(folderInput);
+        //     pathContainer.appendChild(pathInputLabel);
+        //     document.body.appendChild(pathWindow);
 
         document.body.appendChild(pathWindow);
         pathInput.focus(); // Set focus to the input field when the window opens

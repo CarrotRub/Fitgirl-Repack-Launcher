@@ -496,6 +496,10 @@ color: white;
   padding: 10px;
   margin: 20px;
 }
+.pathContainer {
+  text-align: center;
+  padding: 20px;
+}
 
 /* Search bar styles */
 .search-icon,

@@ -21,8 +21,9 @@
 body {
   font-family: satoshiFontMedium;
   background-color: var(--primary-color);
-  color: var(--text-color);
   overflow: hidden;
+  color: white; /* TODO might need to change this as its a lazy way of doing it */
+
 }
 
 /* Container styles */
@@ -69,7 +70,7 @@ body {
   background-color: #7c204b;
   border-radius: 10px;
 }
-
+/* Left side Menu bar */
 .sidebar {
   background-color: rgb(0 0 0 / 57%);
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -91,7 +92,13 @@ body {
 }
 
 .settingsPage {
+  display: flex;
+  justify-content: center; /* Horizontally center the content */
+  align-items: center; /* Vertically center the content */
   margin-top: auto;
+  border-radius: 20px;
+  background-color: rgb(20, 20, 20);
+  padding: 10px;
 }
 
 .logo-container {
@@ -108,6 +115,8 @@ body {
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 20px;
+  border: 2px solid #d3337e;
+
 }
 
 .logo img {
@@ -141,29 +150,32 @@ body {
   flex-grow: 1;
   display: flex;
   align-items: center;
-  padding: 20px;
-  justify-content: flex-end;
+  padding: 10px;
+  justify-content: flex-start;
   z-index: 2;
 }
-
 .threeGuys {
   flex-direction: column;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 100%;
+  width: 70%;
+  background-color: rgb(20, 20, 20);
+  box-shadow: 2px 0 5px rgba(27, 27, 27, 0.1);
+  border-radius: 30px;
+  
 }
 
 .threeGuys > * {
-  margin-bottom: 3em;
+  margin-bottom: 1em;
+  margin-top: 1em;
 }
 
-.horibar {
-  height: 15%;
-  background-color: rgba(0, 0, 0, 0.39);
-  backdrop-filter: blur(10px);
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-}
+ .horibar {
+    height: 15%;
+    background-color: transparent; 
+     backdrop-filter: blur(0px);
+  }
 
 .horibar ul {
   list-style: none;
@@ -181,17 +193,12 @@ body {
   color: inherit;
 }
 
-.search-icon,
-img {
-  width: 20px;
-  height: 20px;
-}
 
+/* Image inside of the grid */
 .image-option {
-  border: 1px solid #ddd;
-  padding: 10px;
+  border: 2px solid pink;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
@@ -205,16 +212,14 @@ img {
 }
 
 .game-grid {
-  padding-left: 10px;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding: 15px;
   grid-column: 2;
   display: grid;
-  gap: 5%;
+  gap: 2%;
   grid-template-columns: repeat(auto-fill, minmax(15%, 1fr));
   justify-items: start;
   z-index: 0;
-  margin-bottom: 70em;
+  margin-bottom: 20em;
 }
 
 .game-container {
@@ -222,7 +227,6 @@ img {
   padding-left: 120px;
   flex: 1;
   z-index: 1;
-
   width: 100%;
   list-style: none;
   overflow: hidden;
@@ -306,7 +310,7 @@ img {
 }
 
 .sliding-image {
-  width: 90%;
+  width: 45%;
   height: auto;
   display: block;
   margin: auto;
@@ -314,33 +318,27 @@ img {
   box-shadow: -1px 1px 14px 14px rgb(241 244 245 / 21%);
 }
 
-.info-container {
-  margin: 2em 0;
-  font-family: inherit;
-  padding-top: 2em;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-  white-space: pre-wrap;
-}
 
 .download-button,
 .downloading-button {
   margin-top: 10px;
   padding: 10px;
-  background-color: #761c7e;
+  background-color: #0de22a;
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 50%; /* Changed to create a circle */
   cursor: pointer;
 }
+
 
 .progress-bar-container {
   display: inline-block;
   width: 90%;
-  height: 20px;
-  border-radius: 5px;
+  height: 10px;
+  border-radius: 2px;
   background-color: #761c7e;
-  margin-top: 10px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .progress-bar {
@@ -390,97 +388,104 @@ img {
 }
 
 
-#search-results {
-  position: absolute;
-  width: calc(100% - 20px);
-  background-color: rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-  padding: 5px;
-  box-sizing: border-box;
-  z-index: 999;
-  display: none;
-  top: calc(100% + 5px);
-  left: 0;
+/* Search bar styles */
+.search-icon,
+img {
+  width: 20px;
+  height: 20px;
+}
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
 }
 
+.search__input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #f4f2f2;
+  border-color: #d3337e;
+  color: #646464;
+  padding: 0.7rem 1rem;
+  border-radius: 30px;
+  width: 20em;
+  transition: all ease-in-out .5s;
+  margin-right: -2rem;
+}
+
+.search__input:hover, .search__input:focus {
+  box-shadow: 0 0 1em #d3337e;
+}
+
+.search__input:focus {
+  outline: none;
+  background-color: #f0eeee;
+}
+
+.search__input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #ccc;
+}
+
+.search__input:focus + .search__button {
+  background-color: #f0eeee;
+}
+
+.search__button {
+  border: none;
+  background-color: #f4f2f2;
+  margin-top: .1em;
+}
+
+.search__button:hover {
+  cursor: pointer;
+}
+
+.search__icon {
+  height: 1.3em;
+  width: 1.3em;
+  fill: #d3337e;
+}
+
+/* Search results container */
+#search-results {
+  margin-left: 15px;
+
+  position: absolute;
+  background-color: #011b4c;
+  border-radius: 15px;
+  padding: 10px;
+  z-index: 999;
+  display: inline-block;
+  top: calc(100% + 5px);
+  left: 0;
+
+}
+
+/* Show search results when input is focused */
+.search__input:focus + .form__label + #search-results {
+  display: block;
+}
+
+/* Hide search results when input is not focused */ 
+.search__input:not(:focus) + .form__label + #search-results {
+  display: none;
+}
+
+/* Styling for search results links */
 #search-results a {
   display: block;
-  color: var(--accent-color);
+  color: #fff;
   text-decoration: none;
   margin-bottom: 5px;
 }
 
-#search-results a:nth-child(n + 6) {
-  display: none;
+#search-results a:hover {
+  text-decoration: underline;
 }
+/* End of search bar styles */
 
-.form__group {
-  position: relative;
-  padding: 20px 0 0;
-  width: 100%;
-  max-width: 180px;
-}
-
-.form__field {
-  font-family: inherit;
-  width: 100%;
-  border: none;
-  border-bottom: 2px solid #d3337e;
-  outline: 0;
-  font-size: 15px;
-  color: #fff;
-  padding: 7px 0;
-  background: transparent;
-  transition: border-color 0.2s;
-}
-
-.form__field::placeholder {
-  color: transparent;
-}
-
-.form__field:placeholder-shown ~ .form__label {
-  font-size: 17px;
-  cursor: text;
-  top: 20px;
-}
-
-.form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 17px;
-  color: #d3337e;
-  pointer-events: none;
-}
-
-.form__field:focus {
-  padding-bottom: 6px;
-  font-weight: 700;
-  border-width: 3px;
-  border-image: linear-gradient(to right, #d3337e, #7c204b);
-  border-image-slice: 1;
-}
-
-.form__field:focus ~ .form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 17px;
-  color: #d84f8f;
-  font-weight: 700;
-}
-
-/* reset input */
-.form__field:required,
-.form__field:invalid {
-  box-shadow: none;
-}
-
-.form__group input:focus + #search-results {
-  display: block;
-}
 
 
 
@@ -537,12 +542,25 @@ img {
 }
 
 .info-container {
-  margin: 2em 0;
+  margin: 1em 0;
   font-family: inherit;
-  padding-top: 2em;
+  padding-top: 0.5em;
   padding-left: 0.5em;
   padding-right: 0.5em;
   white-space: pre-wrap;
+  color: pink;
+}
+
+/* Footer styles */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #01032a;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
 }
   /* PART OF LIBRARY WINDOW */
   .start-button{

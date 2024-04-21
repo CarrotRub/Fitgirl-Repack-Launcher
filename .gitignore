@@ -16,3 +16,4 @@ out/
 scratch/
 *.xml
 tests/
+src/public/html/scripts/test.js

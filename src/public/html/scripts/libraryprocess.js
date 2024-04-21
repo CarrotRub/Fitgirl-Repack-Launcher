@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   } = window;
 
   const dirname = await primaryAPI.getDirname();
+
   const downloadedGames = primaryAPI.resolvePath(dirname, '../../src/private/library/info_downloaded_games.json');
   const installedLocallyGamesPath = primaryAPI.resolvePath(dirname, '../../src/private/library/locally_installed_games.json')
 
@@ -144,18 +145,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         startButton.textContent = 'Start Game';
 
         startButton.addEventListener('click', async function() {
-          
-          try {
-            primaryAPI.spawnBridgedFile(pathExecutable)
-          } catch (error) {
-            throw new Error(error)
-          }
-        });
+            try {
+                primaryAPI.spawnBridgedFile(pathExecutable)
+              } catch (error) {
+                throw new Error(error)
+              }
+            });	      
+    
+    
 
         slidingWindow.appendChild(contentContainer);
         contentContainer.appendChild(imgElement);
-        contentContainer.appendChild(infoContainer);
         contentContainer.appendChild(startButton);
+        contentContainer.appendChild(infoContainer);
         contentContainer.appendChild(progressContainer);
         const returnSlideArrow = document.querySelector('.return-arrow-sld');
 
@@ -163,8 +165,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         returnSlideArrow.addEventListener('click', function() {
             let slidingWindow = document.querySelector('.sliding-window');
             slidingWindow.style.transform = slidingWindow.style.transform === 'translateX(100%)' ? 'translateX(0)' : 'translateX(100%)';
+            
+        // Close file explorer if open TODO:does not work :(, fix it)
+        let fileExplorer = document.querySelector('.file-explorer');
+        if (fileExplorer) {
+            fileExplorer.style.display = 'none';
+        }    
 
-        });
+
+       
+        }
+    );
+    
     }
 
       async function toggleSlidingWindow(titleO,linkO,descCO, pathExecutableO ) {

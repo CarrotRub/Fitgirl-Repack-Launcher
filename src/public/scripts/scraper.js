@@ -78,9 +78,23 @@ const shouldRunFunction = () => {
     return true;
   }
 
-  console.log("Function can't run yet.");
+  const remainingTime = (1 * 60 * 60 * 1000) - (Date.now() - parseInt(storedTimestamp, 10));
+  const remainingHours = Math.floor(remainingTime / (60 * 60 * 1000));
+  const remainingMinutes = Math.floor((remainingTime % (60 * 60 * 1000)) / (60 * 1000));
+  const remainingSeconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
+
+  console.log(`Function can't run yet. Time remaining: ${remainingHours} hours, ${remainingMinutes} minutes, ${remainingSeconds} seconds.`);
   return false;
 };
+
+const resetTimestamp = () => {
+  localStorage.removeItem('lastExecutionTimestamp');
+  console.log("Timestamp reset.");
+};
+
+// Manually reset the timestamp for testing purposes, uncomment the line below and run the script
+// resetTimestamp();
+
 
 const getMagnetLinks = async (page) => {
   return await page.evaluate(() => {
@@ -150,7 +164,7 @@ const getGamesDesc = async (page) => {
 
 const getGamesData = async () => {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true, // Hide the browser window
     defaultViewport: null,
   });
 

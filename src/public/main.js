@@ -202,7 +202,7 @@ ipcMain.handle('show-context-menu-game', (event) => {
 });
 ipcMain.handle('show-context-menu-install-locally', async (event, titleGame, gameImage, gameDescription) => {
     const contextMenuInstallTemplate = [{
-        label: 'Add it locally !',
+        label: 'Add A Game Locally',
         click: async () => {
             try {
                 const returnedGamePath = await openFolderExecutable();
@@ -443,7 +443,8 @@ const createWindow = () => {
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: true,
-                preload: path.join(__dirname, 'preload.js')
+                preload: path.join(__dirname, 'preload.js'),
+                devTools: true,
             }
         })
     } catch (error) {
@@ -495,7 +496,14 @@ app.on('ready', _ => {
     runSpecificFile();
 
     ///////////////////////////////////TRAY AND ITS CONTEXT MENU///////////////////////////////////
-    const icon = nativeImage.createFromPath('src/private/icons/fitgirl_icon(256).png');
+    // Ensure that the icon works on all platforms and rezises it to fit the tray for MacOS
+    let icon = nativeImage.createFromPath('src/private/icons/fitgirl_icon(256)Template.png');
+    icon = icon.resize({
+        width: 16,
+        height: 16
+    });
+
+    // Create the tray
     let tray = new Tray(icon);
 
     const contextMenu = Menu.buildFromTemplate([{

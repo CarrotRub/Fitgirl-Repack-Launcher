@@ -115,6 +115,8 @@ const getGamesData = async (usableurl) => {
     console.log(ftgGamesData.magnetLinks);
     console.log('Descs:');
     console.log(ftgGamesData.descs);
+    console.log('External Link:'); //TODO add url for game page
+
 
     saveToJsonFile(ftgGamesData);
     

@@ -73,6 +73,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             imgElement.alt = title;
             imgElement.className = 'single-sliding-image';
 
+          
+
+            const downloadButton = document.createElement('button');
+            downloadButton.className = 'download-button';
+            downloadButton.textContent = 'Download';
+       
             const infoContainer = document.createElement('div');
             infoContainer.className = 'single-info-container';
             infoContainer.textContent = desc;
@@ -82,12 +88,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                 let usablePathInstalled = await secondaryAPI.contextMenuLocalInstall(title, srcPic, desc);
             })
 
-
-            const downloadButton = document.createElement('button');
-            downloadButton.className = 'download-button';
-            downloadButton.textContent = 'Download';
-       
-            
             
             primaryAPI.readFile(downloadedGames, 'utf8')
                 .then(slideData => {
@@ -108,15 +108,16 @@ document.addEventListener('DOMContentLoaded', async function() {
                     downloadButton.className = 'download-button';
                     if (isDownloading && sessionStorage.getItem('torrentCheckMagnet') === magnetLink) {
                         downloadButton.textContent = 'Stop Downloading';
+                        downloadButton.className = 'stop-downloading-button';
                     } else if (!isDownloading && sessionStorage.getItem('torrentCheckMagnet') === magnetLink) {
                         downloadButton.textContent = 'Continue Download';
+                        downloadButton.className = 'download-button';
                     } else if (isUITorrentNameInJSON) {
                         downloadButton.textContent = 'Install';
+                        //TODO CANT TEST FOR SOME REASON
                     } else {
                         downloadButton.textContent = 'Download';
-                        downloadButton.addEventListener('click', function() {
-                            console.log('Download button clicked2');
-                        });
+                        downloadButton.className = 'download-button';
                     };
                 })
                 .catch(error => {
@@ -124,32 +125,60 @@ document.addEventListener('DOMContentLoaded', async function() {
                 });
 
             
-
-            const progressContainer = document.createElement('div');
-            progressContainer.className = 'preprocess-info';
-            progressContainer.innerHTML = `
-                <div class="single-torrent-details">
+                const progressContainer = document.createElement('div');
+                progressContainer.className = 'preprocess-info';
+                progressContainer.innerHTML = `
+                  <div class="single-torrent-details">
                     <div id="output" class="single-output"></div>
                     <div id="singleProgressBarContainer" class="progress-bar-container">
-                        <div id="singleProgressBar" class="progress-bar"></div>
+                      <div id="singleProgressBar" class="progress-bar"></div>
                     </div>
                     <div class="single-download-details">
-                        <span id="numPeers"></span>
-                        <span id="downloaded"></span>
-                        <span id="total"></span>
-                        <span id="remaining"></span>
-                        <span id="downloadSpeed"></span>
-                        <span id="uploadSpeed"></span>
-                        <span id="progress"></span>
+                      <div class="row">
+                      <span class="data pink-text" id="numPeers"></span>
+                      </div>
+                      <div class="row">
+                      <span class="data pink-text" id="downloaded"></span>
+                      </div>
+                      <div class="row">
+                      <span class="data pink-text" id="total"></span>
+                      </div>
+                      <div class="row">
+                      <span class="data pink-text" id="remaining"></span>
+                      </div>
+                      <div class="row">
+                      <span class="data pink-text" id="downloadSpeed"></span>
+                      </div>
+                      <div class="row">
+                      <span class="data pink-text" id="uploadSpeed"></span>
+                      </div>
+                      <div class="row">
+                      <span class="data pink-text" id="progress"></span>
+                      </div>
                     </div>
-                </div>
-            `;
+                  </div>
+                `;// Append progressContainer to the document or any specific element in the DOM
+                document.body.appendChild(progressContainer); // You can replace document.body with another parent element
+                
 
+                              // Change the text color to pink for the elements inside progressContainer
+
+const pinkTextElements = progressContainer.querySelectorAll('.pink-text');
+pinkTextElements.forEach(element => {
+  element.style.color = 'pink';
+});
+
+
+
+
+  
+                
             // Append elements to the sliding window
             gameContainer.appendChild(contentContainer);
             contentContainer.appendChild(imgElement);
+             contentContainer.appendChild(downloadButton);
             contentContainer.appendChild(infoContainer);
-            contentContainer.appendChild(downloadButton);
+    
             contentContainer.appendChild(progressContainer);
 
 
@@ -165,7 +194,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         } else {
                             console.log('User selected a path:', result.inputValue);
                             downloadButton.textContent = 'Stop Downloading';
-                            downloadButton.className = 'downloading-button';
+                            downloadButton.className = 'stop-downloading-button';
 
                             isDownloading = true;
                         }
@@ -180,6 +209,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     stopUIUpdate();
 
                     downloadButton.textContent = "Download";
+                    downloadButton.className = 'download-button';
                     console.log("clicked 1");
 
                     isDownloading = false;
@@ -322,7 +352,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         let uploadSpeed = sessionStorage.getItem('uploadSpeed');
         let totalSize = sessionStorage.getItem('totalSize');
         let timeRemaining = sessionStorage.getItem('timeRemaining');
-        let progressBar = sessionStorage.getItem('progressBar');arrow
+        let progressBar = sessionStorage.getItem('progressBar');
         let downloadedSize = sessionStorage.getItem('downloadedSize');
         let peers = sessionStorage.getItem('peers');
 
@@ -629,12 +659,15 @@ document.addEventListener('DOMContentLoaded', async function() {
             imgElement.alt = title;
             imgElement.className = 'sliding-image';
 
+        
             let infoContainer = document.createElement('div');
             infoContainer.className = 'info-container';
             infoContainer.textContent = descsContent.info;
 
             downloadButton.className = 'download-button';
             downloadButton.textContent = 'Download';
+
+
 
             primaryAPI.readFile(downloadedGames, 'utf8')
                 .then(slideData => {
@@ -654,13 +687,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                     if (isDownloading && torrentedMagnet === magnetlink) {
                         downloadButton.textContent = 'Stop Downloading';
-                        downloadButton.style.backgroundColor = 'red';
+                        downloadButton.className = 'stop-downloading-button';
                     } else if (!isDownloading && torrentedMagnet === magnetlink) {
                         downloadButton.textContent = 'Continue Download';
+                        downloadButton.className = 'download-button'
                     } else if (isUITorrentNameInJSON) {
                         downloadButton.textContent = 'Install';
+                        //TODO CANT TEST FOR SOME REASN
                     } else {
                         downloadButton.textContent = 'Download';
+                        downloadButton.className = 'download-button';
                     };
                 })
                 .catch(error => {
@@ -668,39 +704,59 @@ document.addEventListener('DOMContentLoaded', async function() {
                 });
 
 
+                let progressContainer = document.createElement('div');
+                progressContainer.className = 'preprocess-info';
+                progressContainer.innerHTML = `
+                  <div class="return-arrow-sld">
+                    <svg fill="#D3337E" width="20px" height="20px" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" id="arrow">
+                      <path d="M8.29289 2.29289C8.68342 1.90237 9.31658 1.90237 9.70711 2.29289L14.2071 6.79289C14.5976 7.18342 14.5976 7.81658 14.2071 8.20711L9.70711 12.7071C9.31658 13.0976 8.68342 13.0976 8.29289 12.7071C7.90237 12.3166 7.90237 11.6834 8.29289 11.2929L11 8.5H1.5C0.947715 8.5 0.5 8.05228 0.5 7.5C0.5 6.94772 0.947715 6.5 1.5 6.5H11L8.29289 3.70711C7.90237 3.31658 7.90237 2.68342 8.29289 2.29289Z"/>
+                    </svg>
+                  </div>
+                  <div class="torrent-details">
+                    <div id="output" class="output"></div>
+                    <div id="progressBarContainer" class="progress-bar-container">
+                      <div id="progressBar" class="progress-bar"></div>
+                    </div>
+                    <div class="download-details">
+                      <div class="row">
+                        <span class="data pink-text" id="numPeers"></span>
+                      </div>
+                      <div class="row">
+                        <span class="data pink-text" id="downloaded"></span>
+                      </div>
+                      <div class="row">
+                        <span class="data pink-text" id="total"></span>
+                      </div>
+                      <div class="row">
+                        <span class="data pink-text" id="remaining"></span>
+                      </div>
+                      <div class="row">
+                        <span class="data pink-text" id="downloadSpeed"></span>
+                      </div>
+                      <div class="row">
+                        <span class="data pink-text" id="uploadSpeed"></span>
+                      </div>
+                      <div class="row">
+                        <span class="data pink-text" id="progress"></span>
+                      </div>
+                    </div>
+                  </div>
+                `;
 
-
-            let progressContainer = document.createElement('div');
-            progressContainer.className = 'preprocess-info';
-            progressContainer.innerHTML = `
-              <div class="return-arrow-sld">
-                <svg fill="#D3337E" width="20px" height="20px" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" id="arrow">
-                  <path d="M8.29289 2.29289C8.68342 1.90237 9.31658 1.90237 9.70711 2.29289L14.2071 6.79289C14.5976 7.18342 14.5976 7.81658 14.2071 8.20711L9.70711 12.7071C9.31658 13.0976 8.68342 13.0976 8.29289 12.7071C7.90237 12.3166 7.90237 11.6834 8.29289 11.2929L11 8.5H1.5C0.947715 8.5 0.5 8.05228 0.5 7.5C0.5 6.94772 0.947715 6.5 1.5 6.5H11L8.29289 3.70711C7.90237 3.31658 7.90237 2.68342 8.29289 2.29289Z"/>
-                </svg>
-              </div>
-              <div class="torrent-details">
-                <div id="output" class="output"></div>
-                <div id="progressBarContainer" class="progress-bar-container">
-                  <div id="progressBar" class="progress-bar"></div>
-                </div>
-                <div class="download-details">
-                  <span id="numPeers"></span>
-                  <span id="downloaded"></span>
-                  <span id="total"></span>
-                  <span id="remaining"></span>
-                  <span id="downloadSpeed"></span>
-                  <span id="uploadSpeed"></span>
-                  <span id="progress"></span>
-                </div>
-              </div>
-            `;
-
+                // Change the text color to pink for the elements inside progressContainer
+const pinkTextElements = progressContainer.querySelectorAll('.pink-text');
+pinkTextElements.forEach(element => {
+  element.style.color = 'pink';
+});
+       
+                
+                
 
 
             slidingWindow.appendChild(contentContainer);
             contentContainer.appendChild(imgElement);
-            contentContainer.appendChild(infoContainer);
             contentContainer.appendChild(downloadButton);
+            contentContainer.appendChild(infoContainer);
             contentContainer.appendChild(progressContainer);
 
             const returnSlideArrow = document.querySelector('.return-arrow-sld');
@@ -730,8 +786,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     } else {
                         console.log('User selected a path:', result.inputValue);
                         downloadButton.textContent = 'Stop Downloading';
-                        downloadButton.style.backgroundColor = 'red';
-                        downloadButton.className = 'downloading-button';
+                        downloadButton.className = 'stop-downloading-button';
 
                         isDownloading = true;
                     }
@@ -740,6 +795,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     window.torrentAPI.stopTorrent();
                     stopUIUpdate()
                     downloadButton.textContent = "Download";
+                    downloadButton.className = 'download-button';
 
                     isDownloading = false;
                 }

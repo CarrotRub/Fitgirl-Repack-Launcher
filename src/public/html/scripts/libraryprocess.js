@@ -150,8 +150,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         slidingWindow.appendChild(contentContainer);
         contentContainer.appendChild(imgElement);
-        contentContainer.appendChild(infoContainer);
         contentContainer.appendChild(startButton);
+        contentContainer.appendChild(infoContainer);
         contentContainer.appendChild(progressContainer);
         const returnSlideArrow = document.querySelector('.return-arrow-sld');
 

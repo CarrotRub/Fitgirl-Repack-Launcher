@@ -91,7 +91,13 @@ body {
 }
 
 .settingsPage {
+  display: flex;
+  justify-content: center; /* Horizontally center the content */
+  align-items: center; /* Vertically center the content */
   margin-top: auto;
+  border-radius: 20px;
+  background-color: #011b4c;
+  padding: 10px;
 }
 
 .logo-container {
@@ -164,7 +170,7 @@ body {
 
 .horibar {
   height: 15%;
-  background-color: #01032a;
+  background-color: none;
   backdrop-filter: blur(10px);
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
@@ -185,11 +191,6 @@ body {
   color: inherit;
 }
 
-.search-icon,
-img {
-  width: 20px;
-  height: 20px;
-}
 
 .image-option {
   border: 1px solid #ddd;
@@ -218,7 +219,7 @@ img {
   grid-template-columns: repeat(auto-fill, minmax(15%, 1fr));
   justify-items: start;
   z-index: 0;
-  margin-bottom: 70em;
+  margin-bottom: 7em;
 }
 
 .game-container {
@@ -226,7 +227,6 @@ img {
   padding-left: 120px;
   flex: 1;
   z-index: 1;
-
   width: 100%;
   list-style: none;
   overflow: hidden;
@@ -395,97 +395,102 @@ img {
 }
 
 
-#search-results {
-  position: absolute;
-  width: calc(100% - 20px);
-  background-color: rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-  padding: 5px;
-  box-sizing: border-box;
-  z-index: 999;
-  display: none;
-  top: calc(100% + 5px);
-  left: 0;
+/* Search bar styles */
+.search-icon,
+img {
+  width: 20px;
+  height: 20px;
+}
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
 }
 
+.search__input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #f4f2f2;
+  border-color: #d3337e;
+  color: #646464;
+  padding: 0.7rem 1rem;
+  border-radius: 30px;
+  width: 20em;
+  transition: all ease-in-out .5s;
+  margin-right: -2rem;
+}
+
+.search__input:hover, .search__input:focus {
+  box-shadow: 0 0 1em #d3337e;
+}
+
+.search__input:focus {
+  outline: none;
+  background-color: #f0eeee;
+}
+
+.search__input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #ccc;
+}
+
+.search__input:focus + .search__button {
+  background-color: #f0eeee;
+}
+
+.search__button {
+  border: none;
+  background-color: #f4f2f2;
+  margin-top: .1em;
+}
+
+.search__button:hover {
+  cursor: pointer;
+}
+
+.search__icon {
+  height: 1.3em;
+  width: 1.3em;
+  fill: #d3337e;
+}
+
+/* Search results container */
+#search-results {
+  position: absolute;
+  background-color: #011b4c;
+  border-radius: 15px;
+  padding: 10px;
+  z-index: 999;
+  display: inline-block;
+  top: calc(100% + 5px);
+  left: 0;
+
+}
+
+/* Show search results when input is focused */
+.search__input:focus + .form__label + #search-results {
+  display: block;
+}
+
+/* Hide search results when input is not focused */ 
+.search__input:not(:focus) + .form__label + #search-results {
+  display: none;
+}
+
+/* Styling for search results links */
 #search-results a {
   display: block;
-  color: var(--accent-color);
+  color: #fff;
   text-decoration: none;
   margin-bottom: 5px;
 }
 
-#search-results a:nth-child(n + 6) {
-  display: none;
+#search-results a:hover {
+  text-decoration: underline;
 }
+/* End of search bar styles */
 
-.form__group {
-  position: relative;
-  padding: 20px 0 0;
-  width: 100%;
-  max-width: 180px;
-}
-
-.form__field {
-  font-family: inherit;
-  width: 100%;
-  border: none;
-  border-bottom: 2px solid #d3337e;
-  outline: 0;
-  font-size: 15px;
-  color: #fff;
-  padding: 7px 0;
-  background: transparent;
-  transition: border-color 0.2s;
-}
-
-.form__field::placeholder {
-  color: transparent;
-}
-
-.form__field:placeholder-shown ~ .form__label {
-  font-size: 17px;
-  cursor: text;
-  top: 20px;
-}
-
-.form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 17px;
-  color: #d3337e;
-  pointer-events: none;
-}
-
-.form__field:focus {
-  padding-bottom: 6px;
-  font-weight: 700;
-  border-width: 3px;
-  border-image: linear-gradient(to right, #d3337e, #7c204b);
-  border-image-slice: 1;
-}
-
-.form__field:focus ~ .form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 17px;
-  color: #d84f8f;
-  font-weight: 700;
-}
-
-/* reset input */
-.form__field:required,
-.form__field:invalid {
-  box-shadow: none;
-}
-
-.form__group input:focus + #search-results {
-  display: block;
-}
 
 
 

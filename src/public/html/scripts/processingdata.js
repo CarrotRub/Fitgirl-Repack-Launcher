@@ -374,16 +374,23 @@ pinkTextElements.forEach(element => {
 
 
     }
-
     async function startEXEProcessing() {
         let torrentFolderName = sessionStorage.getItem('torrentFolderName');
         let varActualInput = sessionStorage.getItem('actualPathInput');
         let gameFolderPathEXE = varActualInput + torrentFolderName + '/' + 'setup.exe';
 
-        primaryAPI.executeBridgedFile(gameFolderPathEXE);
+        try {
+            primaryAPI.executeBridgedFile(gameFolderPathEXE);
+        } catch (error) {
+            throw new Error("Error in Game Path",error);
+        }
         await new Promise(r => setTimeout(r, 10000));
         console.log(autoInstallerPath);
-        primaryAPI.executeBridgedFile(autoInstallerPath);
+        try {
+            primaryAPI.executeBridgedFile(autoInstallerPath);
+        } catch (error) {
+            throw new Error(error)
+        }
 
     }
 
@@ -506,6 +513,12 @@ pinkTextElements.forEach(element => {
                 resolve(false);
             }
         });
+        sessionStorage.setItem("actualPathInput", pathInput.value)
+            pathContainer.appendChild(pathInput);
+            pathWindow.appendChild(pathContainer);
+            pathWindow.appendChild(folderInput);
+            pathContainer.appendChild(pathInputLabel);
+            document.body.appendChild(pathWindow);
 
         document.body.appendChild(pathWindow);
         pathInput.focus(); // Set focus to the input field when the window opens

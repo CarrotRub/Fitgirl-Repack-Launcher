@@ -444,7 +444,7 @@ const createWindow = () => {
                 nodeIntegration: true,
                 contextIsolation: true,
                 preload: path.join(__dirname, 'preload.js'),
-                devTools: false,
+                devTools: true,
             }
         })
     } catch (error) {

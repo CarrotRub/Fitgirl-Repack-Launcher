@@ -21,7 +21,6 @@
 body {
   font-family: satoshiFontMedium;
   background-color: var(--primary-color);
-  background-color: #01032a;
   overflow: hidden;
   color: white; /* TODO might need to change this as its a lazy way of doing it */
 }
@@ -54,7 +53,8 @@ body {
 
 /* Left side Menu bar */
 .sidebar {
-  background-color: #01032a;
+  background-color: rgb(0 0 0 / 57%);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -78,7 +78,7 @@ body {
   align-items: center; /* Vertically center the content */
   margin-top: auto;
   border-radius: 20px;
-  background-color: #011b4c;
+  background-color: rgb(20, 20, 20);
   padding: 10px;
 }
 
@@ -143,10 +143,13 @@ body {
   top: 50%;
   transform: translateY(-50%);
   width: 70%;
-  background-color: #011b4c;
+  background-color: rgb(20, 20, 20);
+  box-shadow: 2px 0 5px rgba(27, 27, 27, 0.1);
   border-radius: 30px;
   
 }
+
+
 
 .threeGuys > * {
   margin-bottom: 1em;
@@ -279,7 +282,7 @@ color: white;
   right: 0;
   bottom: 0;
   width: 40%;
-  background-color: #011b4c;
+  background-color: rgba(0, 0, 0, 0.8);
   overflow-y: auto;
   transform: translateX(100%);
   transition: transform 0.5s ease;
@@ -340,8 +343,8 @@ color: white;
   transform: translate(-50%, -50%);
   width: 80%;
   max-width: 600px;
-  background-color: #fff;
-  border-radius: 8px;
+  background-color: rgb(56, 55, 56);
+  border-radius: 15px;
   padding: 20px;
   z-index: 1000;
   overflow-y: auto;
@@ -353,7 +356,7 @@ color: white;
 .pathLabel {
   display: block;
   margin-bottom: 10px;
-  color: #333;
+  color: #ffffff;
   font-size: 16px;
 }
 
@@ -362,24 +365,6 @@ color: white;
   margin-right: 10px; /* Add margin between input and button */
 }
 
-/* Path window styles */
-.pathWindow {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  max-width: 600px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  z-index: 1000;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center items horizontally */
-}
 
 /* Button container for OK and Cancel buttons */
 .buttonContainer {
@@ -463,7 +448,7 @@ color: white;
 .setting-btn {
   width: auto; /* Let the button size adjust based on content */
   border-radius: 5px;
-  background-color: rgb(70, 70, 189);
+  background-color: blue;
   color: white;
   padding: 10px 20px;
   cursor: pointer;

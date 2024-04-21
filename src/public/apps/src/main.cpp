@@ -18,5 +18,6 @@ int main()
     return 0;
 }
 
-// TO BUILD YOURSELF "installer.exe" YOU SHOULD COMPILE "main.cpp" USING THIS : g++ main.cpp -o ../bin/installer.exe -lgdi32
+// TO BUILD YOURSELF "installer.exe" YOU SHOULD COMPILE "main.cpp" USING THIS : g++ main.cpp -o ../bin/installer.exe -lgdi32 -static-libgcc -static-libstdc++ -lpthread
+//mt -manifest installer.exe.manifest -outputresource:installer.exe;#1
 // <3

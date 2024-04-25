@@ -9,10 +9,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const dirname = await primaryAPI.getDirname();
 
     // Start from HTML.
-    const titlesPath = primaryAPI.resolvePath(dirname, '../../src/private/temp/titles.tmp');
-    const picTempPath = primaryAPI.resolvePath(dirname, '../../src/private/temp/pic.tmp');
-    const magnetPath = primaryAPI.resolvePath(dirname, '../../src/private/temp/magnet_links.tmp');
-    const descsPath = primaryAPI.resolvePath(dirname, '../../src/private/temp/descs.json');
+    const myGamesFilePath = primaryAPI.resolvePath(dirname, '../../src/private/temp/games.json')
     const downloadedGames = primaryAPI.resolvePath(dirname, '../../src/private/library/downloaded_games.json');
     const infoDownloadedGamesFile = primaryAPI.resolvePath(dirname, '../../src/private/library/info_downloaded_games.json')
     const autoInstallerPath = primaryAPI.resolvePath(dirname, '../public/apps/bin/installer.exe');
@@ -45,22 +42,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     async function updateSingleGameUI() {
         try {
             // Read the JSON file containing game data
-            const gameData = await primaryAPI.readFileSync('ftgGamesData.json', 'utf-8');
+            const gameData = await primaryAPI.readFile('ftgGamesData.json', 'utf-8');
 
-            // Parse the JSON data
-            const {
-                titles,
-                srcPics,
-                magnetLinks,
-                descs
-            } = JSON.parse(gameData);
+            console.log(gameData)
+            
+            let scrapedGame = JSON.parse(gameData);
+            console.log(scrapedGame)
 
-            // Assuming there's only one game's data in the file
-            const title = titles[0];
-            const srcPic = srcPics[0];
-            const magnetLink = magnetLinks[0];
-            const desc = descs[0].info;
+            var game = scrapedGame[0]; // Accessing the first (and presumably only) object in the array
 
+            var title = game.title;
+            var srcPic = game.img;
+            var magnetLink = game.magnetlink[0];
+            var desc = game.desc;
+            console.log(title, srcPic, magnetLink, desc);
             // Create elements to display game information
             const gameContainer = document.querySelector('.game-container');
             gameContainer.innerHTML = '';
@@ -535,12 +530,10 @@ pinkTextElements.forEach(element => {
      * @param {string[]} magnetLinks Array of magnet links.
      * @param {Object[]} descsPer Array of description objects.
      */
-    function populateImageGrid(links, magnetLinks, descsPer) {
+    function populateImageGrid() {
+        console.log("start population")
         let gameGrid = document.querySelector('.game-grid');
         let fitgirlLauncher = document.querySelector('.game-container');
-        let imageLinks = links;
-
-
 
         function clearSearch() {
             var searchResultsElement = document.getElementById('search-results');
@@ -823,111 +816,79 @@ pinkTextElements.forEach(element => {
             });
         }
 
-        primaryAPI.readLinesFromFile(titlesPath)
-            .then((gameTitles) => {
-                imageLinks.forEach(function(link, index) {
-                    let imageOption = document.createElement('div');
-                    imageOption.className = 'image-option';
-                    let imageStar = document.createElement('div');
-                    imageStar.className = 'star'
-                    let imageStarIcon = document.createElement('div');
-                    imageStarIcon.className = 'star-icon';
-                    let gameTitle = gameTitles[index]
-                    let imgElement = document.createElement('img');
-                    imgElement.src = link;
-                    imgElement.alt = gameTitle;
-                    
-                    imageOption.appendChild(imgElement);
-                    imageOption.addEventListener('mouseover', function() {
-                        let scrollPosition = window.scrollY || document.documentElement.scrollTop;
-                        let blurOverlay = document.createElement('div');
-                        let colorBlurOverlay = document.createElement('div');
-                        blurOverlay.classList.add('blur-overlay');
-                        colorBlurOverlay.classList.add('color-blur-overlay'); //possibly useless, I don't remember anymore.
-                        fitgirlLauncher.appendChild(blurOverlay);
-                        fitgirlLauncher.appendChild(colorBlurOverlay);
 
-                        blurOverlay.style.backgroundColor = `rgb(0,0,0)`;
-                        blurOverlay.style.backgroundImage = `url(${link})`;
-                        blurOverlay.style.filter = 'blur(15px)';
-                        blurOverlay.style.top = `-${scrollPosition}px`;
-                    });
 
-                    // Added a context menu after right click on an imageOption
-                    primaryAPI.readFileSync(descsPath, 'utf-8')
-                        .then((descIndex)=> {
-                            imageOption.addEventListener('contextmenu', function(event) {
-                                event.preventDefault();
-                                secondaryAPI.contextMenuLocalInstall(gameTitle, link, descIndex[index] );
-                            })
-        
-                        })
-                    // Animation for the game bg
-                    imageOption.addEventListener('mouseout', function() {
-                        let blurOverlay = fitgirlLauncher.querySelector('.blur-overlay');
-                        if (blurOverlay) {
-                            blurOverlay.remove();
-                        }
-                    });
+        async function parseGameData() {
+            // Read the contents of the games.json file
+            const jsonData = await primaryAPI.readFile(myGamesFilePath, 'utf8');
+          
+            // Parse the JSON data into JavaScript objects
+            const games = JSON.parse(jsonData);
+          
+            // Now you can work with the parsed data
+            games.forEach((game, i) => {
+                console.log("data searching")
+                const title = game.title;
+                const img = game.img;
+                const desc = game.desc;
+                const magnetlink = game.magnetlink;
 
-                    // Game click
-                    imageOption.addEventListener('click', function() {
-                        console.log("Selected image link: " + link);
 
-                        primaryAPI.readFileSync(descsPath, 'utf-8')
-                            .then((content) => {
+                // Create elements for displaying game information
+                const imageOption = document.createElement('div');
+                imageOption.className = 'image-option';
+                const imgElement = document.createElement('img');
+                imgElement.src = img;
+                console.log(title);
+                console.log(img);
+                imgElement.alt = title;
 
-                                try {
-                                    content = JSON.parse(content);
-                                    toggleSlidingWindow(link, gameTitles[index], magnetLinks[index], content[index]);
+                // Append image to imageOption
+                imageOption.appendChild(imgElement);
 
-                                } catch (error) {
-                                    console.error('Error parsing the JSON:', error.message);
-                                }
-                            })
-                        // addSlideComponents(link, gameTitles[index], magnetLinks[index], descsPath[index] );
-                    });
-
-                    gameGrid.appendChild(imageOption);
+                // Add event listener for mouseover
+                imageOption.addEventListener('mouseover', () => {
+                    const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+                    const blurOverlay = document.createElement('div');
+                    const colorBlurOverlay = document.createElement('div');
+                    blurOverlay.classList.add('blur-overlay');
+                    colorBlurOverlay.classList.add('color-blur-overlay');
+                    fitgirlLauncher.appendChild(blurOverlay);
+                    fitgirlLauncher.appendChild(colorBlurOverlay);
+                    blurOverlay.style.backgroundColor = `rgb(0,0,0)`;
+                    blurOverlay.style.backgroundImage = `url(${img})`;
+                    blurOverlay.style.filter = 'blur(15px)';
+                    blurOverlay.style.top = `-${scrollPosition}px`;
                 });
 
-            })
-            .catch((error) => {
-                console.error('Error reading the file:', error);
-            })
+                // Add event listener for context menu
+                imageOption.addEventListener('contextmenu', (event) => {
+                    event.preventDefault();
+                    secondaryAPI.contextMenuLocalInstall(title, img, desc);
+                });
+
+                // Add event listener for mouseout
+                imageOption.addEventListener('mouseout', () => {
+                    const blurOverlay = fitgirlLauncher.querySelector('.blur-overlay');
+                    if (blurOverlay) {
+                        blurOverlay.remove();
+                    }
+                });
+
+                // Add event listener for click
+                imageOption.addEventListener('click', () => {
+                    console.log("Selected image link: " + img);
+                    toggleSlidingWindow(img, title, magnetlink, desc);
+                });
+
+                // Append imageOption to gameGrid
+                gameGrid.appendChild(imageOption);
+            });
+          }
+        parseGameData()
     }
 
-
-    // Call the function to get magnet links
-    primaryAPI.readLinesFromFile(magnetPath)
-        .then((magnetLinks) => {
-
-            // Call the function to get image links
-            primaryAPI.readLinesFromFile(picTempPath)
-                .then((lines) => {
-
-                    // Resolve the promise and parse content as JSON
-                    primaryAPI.readFileSync(descsPath, 'utf-8')
-                        .then((content) => {
-                            try {
-                                // Parse content as JSON
-                                content = JSON.parse(content);
-
-                                populateImageGrid(lines, magnetLinks, content);
-                            } catch (error) {
-                                console.error('Error parsing the JSON:', error.message);
-                            }
-                        })
-                        .catch((error) => {
-                            console.error('Error reading the file:', error.message);
-                        });
-                })
-                .catch((error) => {
-                    console.error('Error reading the file:', error);
-                });
-        })
-        .catch((error) => {
-            console.error('Error reading magnet links:', error);
-        });
+    populateImageGrid();
+    console.log("end population")
 
 });

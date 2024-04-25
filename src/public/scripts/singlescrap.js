@@ -1,127 +1,59 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs')
+const {
+  JSDOM
+} = require('jsdom');
+const axios = require('axios');
+const fs = require('fs');
 
-const saveToJsonFile = (data) => {
-  fs.writeFileSync('ftgGamesData.json', JSON.stringify(data, null, 2));
-  console.log('Data saved to ftgGamesData.json, just for you.');
-};
-const getMagnetLinks = async (page) => {
-    return await page.evaluate(() => {
-      const anchorTags = document.querySelectorAll("a");
-      let magnetLinks = [];
-  
-      anchorTags.forEach((anchorTag) => {
-        const hrefAttr = anchorTag.getAttribute("href");
-        if (hrefAttr && hrefAttr.includes("magnet")) {
-          magnetLinks.push(hrefAttr);
-        }
-      });
-  
-      return magnetLinks;
-    });
-  };
-  
-const getGamesTitle = async (page) => {
-    return await page.evaluate(() => {
-      const gamesTitles = document.querySelectorAll(".entry-title");
-      let myGameTitle =document.querySelector(".entry-title")
-      const gamesPictures = document.querySelectorAll(".alignleft");
+class Game {
+  constructor(title, img, desc, magnetlink) {
+      this.title = title;
+      this.img = img;
+      this.desc = desc;
+      this.magnetlink = magnetlink;
+  }
+}
 
-      myGameTitle = myGameTitle.textContent;
+async function getGamesData(gameUrl) {
+  const startTime = Date.now();
+  const games = [];
+  const oneGameData = 'ftgGamesData.json';
 
-      let titles = [myGameTitle];
-      let srcPics = [];
-      
-      console.log(myGameTitle)
-      gamesPictures.forEach((pictureElement) => {
-        const srcAttr = pictureElement.getAttribute("src");
-        if (srcAttr) {
-          srcPics.push(srcAttr);
-        }
-      });
+  const url = gameUrl;
+  const response = await axios.get(url);
+  const body = response.data;
+
+  const dom = new JSDOM(body);
+  const document = dom.window.document;
+
+  var title = document.querySelector('.entry-title').textContent;
+
+  // Get the src attribute of the <img> element and wrap it inside an array
+  var img = document.querySelector('img.alignleft').getAttribute('src');
   
-      titles = titles.map(item => item === 'ΓÇô' ? '-' : item);
-  
-      return { titles, srcPics };
-    });
-};
-  
-const getGamesDesc = async (page) => {
-    return await page.evaluate(() => {
-      const gamesInfoElements = document.querySelectorAll("div.entry-content");
-      let gamesInfo = [];
-  
-      gamesInfoElements.forEach((infoElement) => {
-        const gameInfo = {};
-  
-        const findText = (element, searchText) => {
-          const foundElement = Array.from(element.childNodes).find(node => node.textContent.includes(searchText));
-          return foundElement ? foundElement.textContent.trim() : '';
-        };
-  
-        gameInfo.info = findText(infoElement, 'Genres/Tags:') + '\n';
-  
-        gamesInfo.push(gameInfo);
-      });
-  
-      return gamesInfo;
-    });
-};
-  
-  
-const getGamesData = async (usableurl) => {
-    const browser = await puppeteer.launch({
-      headless: false,
-      defaultViewport: null,
-    });
-  
-    const page = await browser.newPage();
-    await page.setRequestInterception(true);
-    page.on('request', (request) => {
-      if (['image', 'stylesheet', 'font', 'script'].indexOf(request.resourceType()) !== -1) {
-        request.abort();
-      } else {
-        request.continue();
+  // Get the description text and wrap it inside an array
+  var desc = document.querySelector('p').textContent;
+  const anchorTags = document.querySelectorAll("a");
+  console.log(title)
+  let magnetLink = [];
+
+  anchorTags.forEach((anchorTag) => {
+      const hrefAttr = anchorTag.getAttribute("href");
+      // Check if hrefAttr is not null, contains "magnet", and does not contain "rutor"
+      if (hrefAttr && hrefAttr.includes("magnet") && !hrefAttr.includes("rutor")) {
+          magnetLink.push(hrefAttr);
       }
-    });
-  
-    const ftgGamesData = {
-      titles: [],
-      srcPics: [],
-      magnetLinks: [],
-      descs: []
-    };
-  
-      const url = usableurl;
-  
-      await page.goto(url, { waitUntil: 'domcontentloaded' });
-      await page.waitForSelector('.alignleft', { visible: true });
-  
-      const ftgGamesDataPage = await getGamesTitle(page);
-      const magnetLinksPage = await getMagnetLinks(page);
-      const ftgGamesDescPage = await getGamesDesc(page);
-  
-      ftgGamesData.titles.push(...ftgGamesDataPage.titles);
-      ftgGamesData.srcPics.push(...ftgGamesDataPage.srcPics);
-      ftgGamesData.magnetLinks.push(...magnetLinksPage);
-      ftgGamesData.descs.push(...ftgGamesDescPage);
-
-  
-    console.log('Extracted Titles:');
-    console.log(ftgGamesData.titles);
-    console.log('Link Pictures:');
-    console.log(ftgGamesData.srcPics);
-    console.log('Magnet Links:');
-    console.log(ftgGamesData.magnetLinks);
-    console.log('Descs:');
-    console.log(ftgGamesData.descs);
-    console.log('External Link:'); //TODO add url for game page
+  });
 
 
-    saveToJsonFile(ftgGamesData);
-    
-    await browser.close();
-    return ftgGamesData;
-};
+  const game = new Game(title, img, desc, magnetLink);
+  games.push(game);
+  const jsonData = JSON.stringify(games, null, 2);
+  fs.writeFileSync(oneGameData, jsonData);
+
+  const endTime = Date.now();
+  const durationTimeProcess = endTime - startTime;
+  console.log(`Data has been written to ${oneGameData}. Time was: ${durationTimeProcess}ms`);
+}
+
 
 module.exports = { getGamesData };

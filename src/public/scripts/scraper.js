@@ -1,18 +1,14 @@
-const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const LocalStorage = require('node-localstorage').LocalStorage;
 const axios = require('axios');
 const localStorage = new LocalStorage('./scratch');
+const { JSDOM } = require('jsdom');
 
-const titlesTempPath = path.resolve(__dirname, '../../private/temp/titles.tmp');
-const picTempPath = path.resolve(__dirname, '../../private/temp/pic.tmp');
-const magnetLinksTempPath = path.resolve(__dirname, '../../private/temp/magnet_links.tmp');
-const descTempPath = path.resolve(__dirname, '../../private/temp/descs.json');
 const downloadedGamesPath = path.resolve(__dirname, '../../private/library/downloaded_games.json');
 const infoDownloadedGamesFilePath = path.resolve(__dirname, '../../private/library/info_downloaded_games.json');
 const locallyInstalledGamesPath = path.resolve(__dirname, '../../private/library/locally_installed_games.json');
-
+const allGamesData = path.resolve(__dirname, '../../private/temp/games.json')
 /* Start of platform detection */
 // Determine if the user is using Windows or Linux and set the executable file extension accordingly
  // Alert the user that this app is not supported on Mac/Linux platforms
@@ -55,20 +51,6 @@ const isFileNotEmpty = (TempPaths) => {
   }
 };
 
-function deleteLinesWithWord(filePath, targetWord) {
-
-  const fileContents = fs.readFileSync(filePath, 'utf-8');
-
-  const lines = fileContents.split('\n');
-
-  // Filter out lines containing the target word
-  const filteredLines = lines.filter(line => !line.includes(targetWord));
-
-  const updatedContents = filteredLines.join('\n');
-
-  fs.writeFileSync(filePath, updatedContents, 'utf-8');
-
-}
 const shouldRunFunction = () => {
   const storedTimestamp = localStorage.getItem('lastExecutionTimestamp');
 
@@ -96,181 +78,65 @@ const resetTimestamp = () => {
 // resetTimestamp();
 
 
-const getMagnetLinks = async (page) => {
-  return await page.evaluate(() => {
-    const anchorTags = document.querySelectorAll("a");
-    let magnetLinks = [];
-
-    anchorTags.forEach((anchorTag) => {
-      const hrefAttr = anchorTag.getAttribute("href");
-      if (hrefAttr && hrefAttr.includes("magnet")) {
-        magnetLinks.push(hrefAttr);
-      }
-    });
-
-    return magnetLinks;
-  });
-};
-
-const getGamesTitles = async (page) => {
-  return await page.evaluate(() => {
-    const gamesTitles = document.querySelectorAll(".entry-title");
-    const gamesPictures = document.querySelectorAll(".alignleft");
-    let titles = [];
-    let srcPics = [];
-
-    gamesTitles.forEach((titleElement) => {
-      const anchorTag = titleElement.querySelector("a");
-      if (anchorTag) {
-        titles.push(anchorTag.innerText);
-      }
-    });
-
-    gamesPictures.forEach((pictureElement) => {
-      const srcAttr = pictureElement.getAttribute("src");
-      if (srcAttr) {
-        srcPics.push(srcAttr);
-      }
-    });
-
-    titles = titles.map(item => item === 'ΓÇô' ? '-' : item);
-
-    return { titles, srcPics };
-  });
-};
-
-const getGamesDesc = async (page) => {
-  return await page.evaluate(() => {
-    const gamesInfoElements = document.querySelectorAll("div.entry-content");
-    let gamesInfo = [];
-
-    gamesInfoElements.forEach((infoElement) => {
-      const gameInfo = {};
-
-      const findText = (element, searchText) => {
-        const foundElement = Array.from(element.childNodes).find(node => node.textContent.includes(searchText));
-        return foundElement ? foundElement.textContent.trim() : '';
-      };
-
-      gameInfo.info = findText(infoElement, 'Genres/Tags:') + '\n';
-
-      gamesInfo.push(gameInfo);
-    });
-
-    return gamesInfo;
-  });
-};
-
-
-const getGamesData = async () => {
-  const browser = await puppeteer.launch({
-    headless: true, // Hide the browser window
-    defaultViewport: null,
-  });
-
-  const page = await browser.newPage();
-  await page.setRequestInterception(true);
-  page.on('request', (request) => {
-    if (['image', 'stylesheet', 'font', 'script'].indexOf(request.resourceType()) !== -1) {
-      request.abort();
-    } else {
-      request.continue();
+class Game {
+    constructor(title, img, desc, magnetlink) {
+        this.title = title;
+        this.img = img;
+        this.desc = desc;
+        this.magnetlink = magnetlink;
     }
-  });
+}
+async function scrapingFunc() {
+  const startTime = Date.now();
+  const games = [];
 
-  const ftgGamesData = {
-    titles: [],
-    srcPics: [],
-    magnetLinks: [],
-    descs: []
-  };
+  for (let page_number = 1; page_number <= 5; page_number++) {
+      const url = `https://fitgirl-repacks.site/category/lossless-repack/page/${page_number}`;
+      const response = await axios.get(url);
+      const body = response.data;
 
-  for (let i = 1; i <= 5; i++) {
-    const url = `https://fitgirl-repacks.site/category/lossless-repack/page/${i}/`;
+      const dom = new JSDOM(body);
+      const document = dom.window.document;
 
-    await page.goto(url, { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('.alignleft', { visible: true });
+      const titles = document.querySelectorAll('.entry-title a');
+      const pics = document.querySelectorAll('.alignleft');
+      const descs = document.querySelectorAll('div.entry-content');
+      const anchorTags = document.querySelectorAll("a");
 
-    const ftgGamesDataPage = await getGamesTitles(page);
-    const magnetLinksPage = await getMagnetLinks(page);
-    const ftgGamesDescPage = await getGamesDesc(page);
-
-    ftgGamesData.titles.push(...ftgGamesDataPage.titles);
-    ftgGamesData.srcPics.push(...ftgGamesDataPage.srcPics);
-    ftgGamesData.magnetLinks.push(...magnetLinksPage);
-    ftgGamesData.descs.push(...ftgGamesDescPage);
-  }
-
-  await browser.close();
-  return ftgGamesData;
-};
-
-
-const writingData = async () => {
-  const empytJSON = {};
-  const ftgGamesData = await getGamesData();
-  const ftgDescs = ftgGamesData.descs.map(gameInfo => gameInfo.info);
-  fs.writeFile(titlesTempPath, ftgGamesData.titles.join('\n'), function (err) {
-    if (err) throw err;
-    console.log("Saved Titles");
-  });
-
-  fs.writeFile(picTempPath, ftgGamesData.srcPics.join('\n'), function (err) {
-    if (err) throw err;
-    console.log("Saved Pictures");
-  });
-
-  fs.writeFile(magnetLinksTempPath, ftgGamesData.magnetLinks.join('\n'), function (err) {
-    const filePath = magnetLinksTempPath;
-    const targetWord = 'rutor';
-
-    deleteLinesWithWord(filePath, targetWord);
-    if (err) throw err;
-    console.log("Saved Magnet Links");
-  });
-
-  fs.writeFile(descTempPath, JSON.stringify(ftgGamesData.descs, null, 2), function (err) {
-    if (err) throw err;
-    console.log("Saved Descriptions");
-  });
-
-  if(isFileNotEmpty(downloadedGamesPath)){
-    try {
-      fs.writeFile(downloadedGamesPath, JSON.stringify(empytJSON, null, 2), function(err){
-        if (err) throw err;
-        console.log("Created file" )
+      let magnetLinks = [];
+      let srcPics = [];
+      anchorTags.forEach((anchorTag) => {
+          const hrefAttr = anchorTag.getAttribute("href");
+          if (hrefAttr && hrefAttr.includes("magnet")) {
+              magnetLinks.push(hrefAttr);
+          }
       });
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-
-
-  if(isFileNotEmpty(infoDownloadedGamesFilePath)){
-    try {
-      fs.writeFile(infoDownloadedGamesFilePath, JSON.stringify(empytJSON, null, 2), function(err){
-        if (err) throw err;
-        console.log("Created file" )
+      pics.forEach((pictureElement) => {
+        const srcAttr = pictureElement.getAttribute("src");
+        if (srcAttr) {
+          srcPics.push(srcAttr);
+        }
       });
-    } catch (error) {
-      throw new Error(error)
+      for (let i = 0; i < titles.length; i++) {
+        const title = titles[i].textContent.trim();
+        const img = srcPics[i] || '';
+        const desc = descs[i].textContent.trim();
+        const magnetLink = magnetLinks[i] || '';
+    
+        const game = new Game(title, img, desc, magnetLink);
+        games.push(game);
     }
   }
 
+  const jsonData = JSON.stringify(games, null, 2);
+  fs.writeFileSync(allGamesData, jsonData);
+
+  const endTime = Date.now();
+  const durationTimeProcess = endTime - startTime;
+  console.log(`Data has been written to games.json. Time was: ${durationTimeProcess}ms`);
+}
 
 
-  if(isFileNotEmpty(locallyInstalledGamesPath)){
-    try {
-      fs.writeFile(locallyInstalledGamesPath, JSON.stringify(empytJSON, null, 2), function(err){
-        if (err) throw err;
-        console.log("Created file" )
-      });
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-
-};
 async function downloadSitemap(url, filename) {
   try {
 
@@ -314,17 +180,17 @@ for (let i = 0; i < 5; i++) {
 }
 (async () => {
   try {
-    if (isFileNotEmpty([titlesTempPath, picTempPath, descTempPath, magnetLinksTempPath, downloadedGamesPath, infoDownloadedGamesFilePath, locallyInstalledGamesPath])) {
+    if (isFileNotEmpty([allGamesData, downloadedGamesPath, infoDownloadedGamesFilePath, locallyInstalledGamesPath])) {
       if (shouldRunFunction()) {
         //cppProcess
-        writingData();
+        scrapingFunc();
         iterationSitemap();
         //closeCppProcess()
       } else {
         console.log("Function is not allowed to run yet. Window and file operations skipped.");
       }
     } else {
-      writingData();
+      scrapingFunc();
     }
   } catch (error) {
     console.error("Error:", error);

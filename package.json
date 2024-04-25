@@ -16,11 +16,9 @@
     "axios": "^1.6.7",
     "browserify": "^17.0.0",
     "electron": "^27.0.4",
+    "jsdom": "^24.0.0",
     "moment": "^2.29.4",
     "node-localstorage": "^3.0.5",
-    "puppeteer": "^21.5.2",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-block-resources": "^2.4.3",
     "sweetalert2": "^11.10.7",
     "transmission": "^0.4.10",
     "webtorrent": "^1.9.7"

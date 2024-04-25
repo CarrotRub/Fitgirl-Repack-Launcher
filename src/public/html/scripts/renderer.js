@@ -13,7 +13,7 @@ window.addEventListener('DOMContentLoaded', async function() {
     const _clickedHref = this.href;
 
     ipcRenderer.on('scrape-this-link', (_event, value) => {
-      getGamesData()
+      getGamesData(value)
     })
   })
   function catchNewWindow(link){

@@ -141,7 +141,13 @@ function addGameToFavorites() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+ipcMain.handle('exists-sync', (path) => {
+    try {
+        return fs.existsSync(path);
+    } catch (error) {
+        throw new Error(error);
+    }
+})
 ipcMain.handle('open-directory-path', async (event) => {
     try {
         const selectedFolder = await openFolder();
@@ -468,7 +474,6 @@ const createWindow = () => {
     }
 
 }
-
 const runSpecificFile = () => {
     let consoleOutput = '';
 
@@ -494,7 +499,6 @@ const runSpecificFile = () => {
 };
 app.on('ready', _ => {
     runSpecificFile();
-
     ///////////////////////////////////TRAY AND ITS CONTEXT MENU///////////////////////////////////
     // Ensure that the icon works on all platforms and rezises it to fit the tray for MacOS
     let icon = nativeImage.createFromPath('src/private/icons/fitgirl_icon(256)Template.png');

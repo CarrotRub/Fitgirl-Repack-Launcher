@@ -33,6 +33,14 @@ contextBridge.exposeInMainWorld('torrentAPI', {
 // Expose primary functions handlers to the renderer process.
 contextBridge.exposeInMainWorld('primaryAPI', {
 
+  existsFunc: (path) => {
+    try {
+      return ipcRenderer.invoke('exists-sync', path)
+    }catch(error) {
+      throw new Error(error)
+    }
+  },
+
   openPathDir: () => {
     try {
       return ipcRenderer.invoke('open-directory-path');

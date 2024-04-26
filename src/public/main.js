@@ -497,6 +497,7 @@ const runSpecificFile = () => {
     console.log(consoleOutput)
 
 };
+let tray;
 app.on('ready', _ => {
     runSpecificFile();
     ///////////////////////////////////TRAY AND ITS CONTEXT MENU///////////////////////////////////
@@ -508,7 +509,7 @@ app.on('ready', _ => {
     });
 
     // Create the tray
-    let tray = new Tray(icon);
+    tray = new Tray(icon);
 
     const contextMenu = Menu.buildFromTemplate([{
             label: 'Open Fitgirl Repack Launcher',
@@ -551,7 +552,9 @@ app.on('window-all-closed', () => {
   })
   
   app.on('activate', () => { global.win.show() })
-  
-  app.on('before-quit', () => app.quitting = true)
 
+  app.on('before-quit', function (evt) {
+    tray.destroy();
+    app.quitting = true
+    });
 

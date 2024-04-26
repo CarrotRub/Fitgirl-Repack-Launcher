@@ -77,7 +77,7 @@ body {
   justify-content: center; /* Horizontally center the content */
   align-items: center; /* Vertically center the content */
   margin-top: auto;
-  border-radius: 20px;
+  border-radius: 30px;
   background-color: rgb(20, 20, 20);
   padding: 10px;
 }
@@ -145,7 +145,7 @@ body {
   width: 70%;
   background-color: rgb(20, 20, 20);
   box-shadow: 2px 0 5px rgba(27, 27, 27, 0.1);
-  border-radius: 30px;
+  border-radius: 60px;
   
 }
 

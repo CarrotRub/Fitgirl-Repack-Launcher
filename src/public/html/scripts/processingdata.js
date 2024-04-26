@@ -668,7 +668,7 @@ pinkTextElements.forEach(element => {
         
             let infoContainer = document.createElement('div');
             infoContainer.className = 'info-container';
-            infoContainer.textContent = descsContent.info;
+            infoContainer.textContent = descsContent;
 
             downloadButton.className = 'download-button';
             downloadButton.textContent = 'Download';

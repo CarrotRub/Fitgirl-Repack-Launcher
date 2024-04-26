@@ -100,8 +100,16 @@ async function scrapingFunc() {
 
       const titles = document.querySelectorAll('.entry-title a');
       const pics = document.querySelectorAll('.alignleft');
-      const descs = document.querySelectorAll('div.entry-content');
+      const description = document.querySelectorAll('.entry-content');
       const anchorTags = document.querySelectorAll("a");
+
+      const pDesc = [];
+      description.forEach((descElement) => {
+          const pTag = descElement.querySelector("p");
+          if (pTag) {
+              pDesc.push(pTag.textContent.trim());
+          }
+      });
 
       let magnetLinks = [];
       let srcPics = [];
@@ -112,20 +120,21 @@ async function scrapingFunc() {
           }
       });
       pics.forEach((pictureElement) => {
-        const srcAttr = pictureElement.getAttribute("src");
-        if (srcAttr) {
-          srcPics.push(srcAttr);
-        }
+          const srcAttr = pictureElement.getAttribute("src");
+          if (srcAttr) {
+              srcPics.push(srcAttr);
+          }
       });
+
       for (let i = 0; i < titles.length; i++) {
-        const title = titles[i].textContent.trim();
-        const img = srcPics[i] || '';
-        const desc = descs[i].textContent.trim();
-        const magnetLink = magnetLinks[i] || '';
-    
-        const game = new Game(title, img, desc, magnetLink);
-        games.push(game);
-    }
+          const title = titles[i].textContent.trim();
+          const img = srcPics[i] || '';
+          const desc = pDesc[i] || '';
+          const magnetLink = magnetLinks[i] || '';
+
+          const game = new Game(title, img, desc, magnetLink);
+          games.push(game);
+      }
   }
 
   const jsonData = JSON.stringify(games, null, 2);

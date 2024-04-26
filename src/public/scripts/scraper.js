@@ -79,13 +79,14 @@ const resetTimestamp = () => {
 
 
 class Game {
-    constructor(title, img, desc, magnetlink) {
-        this.title = title;
-        this.img = img;
-        this.desc = desc;
-        this.magnetlink = magnetlink;
-    }
+  constructor(title, img, desc, magnetlink) {
+      this.title = title;
+      this.img = img;
+      this.desc = desc;
+      this.magnetlink = magnetlink;
+  }
 }
+
 async function scrapingFunc() {
   const startTime = Date.now();
   const games = [];
@@ -121,7 +122,7 @@ async function scrapingFunc() {
       });
       pics.forEach((pictureElement) => {
           const srcAttr = pictureElement.getAttribute("src");
-          if (srcAttr) {
+          if (srcAttr && srcAttr.includes("imageban")) {
               srcPics.push(srcAttr);
           }
       });
@@ -132,8 +133,10 @@ async function scrapingFunc() {
           const desc = pDesc[i] || '';
           const magnetLink = magnetLinks[i] || '';
 
-          const game = new Game(title, img, desc, magnetLink);
-          games.push(game);
+          if (img.includes("imageban")) {
+              const game = new Game(title, img, desc, magnetLink);
+              games.push(game);
+          }
       }
   }
 

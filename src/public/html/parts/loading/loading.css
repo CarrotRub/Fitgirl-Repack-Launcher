@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(22, 21, 22, 1);
+}
+
+.loading-overlay {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.loading-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.loading-logo {
+    margin-bottom: 20px; /* Adjust the margin as needed */
+}
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Adjust the margin as needed for spacing */
+}
+
+.loader, .loader::before, .loader::after {
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
+    animation: rotate 5s linear infinite;
+}
+.loaderBar {
+    width: calc(160px / 0.707);
+    height: 10px;
+    background: #F9F9F9;
+    border-radius: 10px;
+    border: 1px solid pink;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .loaderBar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 5px;
+    background: repeating-linear-gradient(45deg, #0031F2 0 30px, pink 0 40px) right/200% 100%;
+    animation: fillProgress 6s ease-in-out infinite, lightEffect 1s infinite linear;
+    animation-fill-mode: forwards;
+  }
+  
+  @keyframes fillProgress {
+    0% {
+      width: 0;
+    }
+  
+    33% {
+      width: 33.333%;
+    }
+  
+    66% {
+      width: 66.67%;
+    }
+  
+    100% {
+      width: 100%;
+    }
+  }
+  
+  @keyframes lightEffect {
+    0%, 20%, 40%, 60%, 80%, 100% {
+      background: repeating-linear-gradient(45deg, pink 0 30px, rgb(223, 142, 156) 0 40px) right/200% 100%;
+    }
+  
+    10%, 30%, 50%, 70%, 90% {
+      background: repeating-linear-gradient(45deg, pink 0 30px, rgb(223, 142, 156) 0 40px, rgba(255, 255, 255, 0.3) 0 40px) right/200% 100%;
+    }
+  }

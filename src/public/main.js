@@ -36,6 +36,7 @@ const downloadedGamesPath = path.resolve(__dirname, '..\\private\\library\\info_
 const client = new WebTorrent();
 global.client = client;
 global.win;
+let loadingScreen;
 
 
 
@@ -436,7 +437,38 @@ ipcMain.handle('read-json-file', (event, filePath) => {
     });
 })
 
+const createLoadingScreenWindow = () => {
+    console.log('Loading the loading screen...')
+    try {
+    loadingScreen = new BrowserWindow({
+        width: 400,
+        height: 400,
+        frame: false,
+        show: false, 
+        transparent: true,
+        alwaysOnTop: true,
+    
+    });
+    loadingScreen.loadFile('src\\public\\html\\parts\\loading\\loading.html');
+
+    } catch (error) {
+        throw new Error(error);
+    }
+
+        // Show the loading screen
+    loadingScreen.once('ready-to-show', () => {
+        console.log('Loading screen is ready')
+        loadingScreen.show();
+        // Start the content download
+        runSpecificFile();
+    });
+
+    // Close the loading screen when the main window is ready
+    loadingScreen.on('closed', () => (loadingScreen = null));
+
+};
 const createWindow = () => {
+    console.log('Creating the main window...')
 
     try {
         global.win = new BrowserWindow({
@@ -444,6 +476,7 @@ const createWindow = () => {
             height: 720,
             minWidth: 1280,
             minHeight: 720,
+            show: false,
             icon: 'src\\private\\icons\\fitgirl_icon.png',
             autoHideMenuBar: true,
             webPreferences: {
@@ -472,9 +505,20 @@ const createWindow = () => {
     } catch (error) {
         throw new Error(error);
     }
+        // Show the window when ready
+        global.win.once('ready-to-show', () => {
+            global.win.show();
+            // Hide the loading screen when the main window is ready
+            if (loadingScreen) {
+                loadingScreen.hide();
+            }
+            console.timeEnd('Time taken to start the app');
+        });
+    };
 
-}
+
 const runSpecificFile = () => {
+    console.log('runSpecificFile() called...');
     let consoleOutput = '';
 
     // Override console.log to capture its output
@@ -487,6 +531,7 @@ const runSpecificFile = () => {
     exec(command, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing the command: ${error.message}`);
+            console.log('stderr:', stderr);
             return;
         }
 
@@ -499,7 +544,9 @@ const runSpecificFile = () => {
 };
 let tray;
 app.on('ready', _ => {
-    runSpecificFile();
+    console.log('App is ready to start...');
+    console.time('Time taken to start the app');
+    createLoadingScreenWindow();
     ///////////////////////////////////TRAY AND ITS CONTEXT MENU///////////////////////////////////
     // Ensure that the icon works on all platforms and rezises it to fit the tray for MacOS
     let icon = nativeImage.createFromPath('src/private/icons/fitgirl_icon(256)Template.png');

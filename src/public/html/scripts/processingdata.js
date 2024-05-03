@@ -878,7 +878,8 @@ pinkTextElements.forEach(element => {
                 // Add event listener for click
                 imageOption.addEventListener('click', () => {
                     console.log("Selected image link: " + img);
-                    toggleSlidingWindow(img, title, magnetlink, desc);
+                    toggleSlidingWindow(img, title, magnetlink, desc); 
+                    //todo: add screenshots and full description
                 });
 
                 // Append imageOption to gameGrid

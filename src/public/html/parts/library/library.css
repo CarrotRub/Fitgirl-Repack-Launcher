@@ -1,11 +1,10 @@
-/* Resetting default styles */
+/* Global styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Global styles */
 :root {
   --primary-color: rgba(22, 21, 22, 1);
   --secondary-color: rgba(0, 0, 0, 1);
@@ -32,184 +31,136 @@ body {
   height: 100vh;
 }
 
-.library-container::-webkit-scrollbar,
-.sliding-window::-webkit-scrollbar {
-  width: 10px;
-  background-color: #5514326b;
-}
 
-/* Track */
-.library-container::-webkit-scrollbar-track,
-.sliding-window::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.39);
-  border-radius: 10px;
-}
+/* end of global styles */
 
-/* Handle */
-.library-container::-webkit-scrollbar-thumb,
-.sliding-window::-webkit-scrollbar-thumb {
-  background-color: #7c204b;
-  border-radius: 10px;
-}
-.game-container::-webkit-scrollbar,
-.sliding-window::-webkit-scrollbar {
-  width: 10px;
-  background-color: #5514326b;
-}
+/* ----- Any changes below up to Section 2. can be copied to favorite.css, library.css, settings.css -----*/
+/* ----- As they use the same navigation (Side, top, search, game-grid, game-container, footer ----- */
 
-/* Track */
-.game-container::-webkit-scrollbar-track,
-.sliding-window::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.39);
-  border-radius: 10px;
-}
-
-/* Handle */
-.game-container::-webkit-scrollbar-thumb,
-.sliding-window::-webkit-scrollbar-thumb {
-  background-color: #7c204b;
-  border-radius: 10px;
-}
-/* Left side Menu bar */
 .sidebar {
-  background-color: rgb(0 0 0 / 57%);
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  height: 100vh;
+  background-color: #151515;
+  color: #fff;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  cursor: pointer;
-  height: 100%;
-  list-style: none;
-  width: 120px;
-  padding: 20px 0;
-  margin: auto;
-  position: relative;
+  flex-direction: column;
+  padding-top: 20px;
   z-index: 2;
+  border-right: #242424 1px solid;
 }
 
-.sidebar li:hover {
-  cursor: pointer;
-}
 
-.settingsPage {
+.menu-item {
   display: flex;
-  justify-content: center; /* Horizontally center the content */
-  align-items: center; /* Vertically center the content */
-  margin-top: auto;
-  border-radius: 20px;
-  background-color: rgb(20, 20, 20);
+  align-items: center;
   padding: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;;
 }
+
+.menu-item:hover {
+  background-color: #555;
+}
+
+.menu-icon {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.logo {
+  width: 75px;
+  height: 75px;
+  margin-bottom: 20px;
+  border: 1px solid #fff;
+}
+
 
 .logo-container {
   display: flex;
   align-items: none;
   flex-direction: column;
   box-sizing: border-box;
-  padding-top: 7%;
 }
 
-.logo {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-bottom: 20px;
-  border: 2px solid #d3337e;
 
-}
 
-.logo img {
-  width: 100%;
-  height: 100%;
-}
-
-.sidebar ul {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 20px 0;
-  margin: 0;
-}
-
-.sidebar li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.sidebar a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.threeGuys,
+/* Top bar styles */
 .horibar {
-  flex-grow: 1;
+  width: 100%; /* Set a fixed width */
   display: flex;
   align-items: center;
-  padding: 10px;
-  justify-content: flex-start;
+  justify-content: space-between;
   z-index: 2;
-}
-.threeGuys {
-  flex-direction: column;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 70%;
-  background-color: rgb(20, 20, 20);
-  box-shadow: 2px 0 5px rgba(27, 27, 27, 0.1);
-  border-radius: 30px;
-  
+  background-color: #151515;
+  border-bottom: 1px solid #242424;
+  max-height: 70px; /* Set a maximum height */
+  padding: 15px;
 }
 
+.horibar__search {
+  margin-left: auto; /* Push the search element to the right */
+}
+/* End of top bar styles */
+
+/* Three guys styles (Menu items) */
 .threeGuys > * {
   margin-bottom: 1em;
   margin-top: 1em;
 }
-
- .horibar {
-    height: 15%;
-    background-color: transparent; 
-     backdrop-filter: blur(0px);
-  }
-
-.horibar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.threeGuys li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.horibar li {
-  padding: 10px;
-  cursor: pointer;
+.threeGuys h4 {
+  margin-left: 10px;
 }
 
-.horibar a {
-  text-decoration: none;
-  color: inherit;
-}
+  
 
 
-/* Image inside of the grid */
 .image-option {
-  border: 2px solid pink;
+  grid-area: auto / span 1 / auto / span 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
   text-align: center;
+  margin-right: 20px;
   border-radius: 10px;
-  cursor: pointer;
+  border: 2px solid pink;
+  overflow: hidden; /* added overflow property to ensure content doesn't overflow */
   transition: background-color 0.3s;
 }
 
+
+.image-option img {
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: -1px 1px 10px 8px rgb(0 0 0 / 57%);
+  transition: transform 0.3s ease-out;
+}
+
+.image-option p {
+  margin-top: 5px;
+}
 .image-option:hover {
   background-color: rgba(211, 51, 126, 0.548);
 }
 
 .image-option:hover img {
   transform: scale(1.2);
+
 }
+
+
 
 .game-grid {
   padding: 15px;
@@ -220,10 +171,13 @@ body {
   justify-items: start;
   z-index: 0;
   margin-bottom: 20em;
+  margin-left: 4em;
+  margin-top: 4em;
 }
 
+/* Container outside of game-grid styles */
 .game-container {
-  padding-top: 120px;
+  padding-top: 20px;
   padding-left: 120px;
   flex: 1;
   z-index: 1;
@@ -237,6 +191,18 @@ body {
   overflow-y: scroll;
   position: absolute;
 }
+
+.game-container-title {
+  position: absolute; 
+  top: 13%; 
+  left: 8%; 
+  color: white;
+  padding: 10px 20px;
+  z-index: 1000; 
+  visibility: hidden;
+}
+
+
 
 .color-blur-overlay,
 .blur-overlay {
@@ -252,35 +218,173 @@ body {
   z-index: -1;
 }
 
-.image-option {
-  grid-area: auto / span 1 / auto / span 1;
+/* Search bar styles */
+.img {
+  width: 20px;
+  height: 20px;
+}
+ .search {
   display: flex;
-  flex-direction: column;
-  position: relative;
   align-items: center;
+  justify-content: space-between;
   text-align: center;
-  margin-right: 20px;
-}
+} 
 
-.image-option img {
+/* Search bar styles */
+.search__input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #1c1c1c;
+  border-color: #151515;
+  color: #151515;
+  padding: 0.7rem 1rem;
   border-radius: 10px;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  box-shadow: -1px 1px 10px 8px rgb(0 0 0 / 57%);
-  transition: transform 0.3s ease-out;
+  width: 20em;
+  transition: all ease-in-out .5s;
 }
 
-.image-option p {
-  margin-top: 5px;
+.search__input:hover,
+ .search__input:focus {
+  box-shadow: 0 0 0.5em #d3337e;
 }
-.image-option svg {
+
+.search__input:focus {
+  outline: none;
+  background-color: #1c1c1c;
+  color: #ffffff;}
+
+.search__input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #ccc;
+}
+
+
+/* Search results container */
+#search-results {
+  flex-direction: column;
+  background-color: #000000;
+  border-radius: 15px;
+  border: #242424 2px solid;
+  padding: 10px;
+  z-index: 999;
+  display: none; /* Initially hidden */
   position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
+  right: 1em;
+  margin-top: 5em;
+  width: max-content;
+  max-width: 80vw; /* Adjust max width as needed */
+  overflow: auto; /* Enable scrolling if needed */
 }
 
+
+/* Show search results when input is focused */
+.search__input:focus + .form__label + #search-results {
+  display: block;
+
+}
+
+/* Hide search results when input is not focused */ 
+.search__input:not(:focus) + .form__label + #search-results {
+  display: none;
+}
+
+
+/* Style for the search input */
+.form__field {
+  border: 1px solid #151515;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin-right: 10px;
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #1c1c1c;
+  color: #242424;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  width: 20em;
+  transition: all ease-in-out .5s;
+}
+
+
+/* Styling for search results links */
+#search-results a {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  margin-bottom: 5px;
+}
+
+#search-results a:hover {
+  text-decoration: underline;
+}
+/* End of search bar styles */
+
+/* Footer styles */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #151515;
+  color: #fff;
+  padding: 10px 20px; /* Adjust padding as needed */
+  border-top: 1px solid #242424;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer p {
+  margin: 0; /* Reset default margin */
+  color: #ffffff;
+  font-size: 12px;
+}
+
+/* Horibar title styles */
+.footer__title {
+  margin: 0; /* Reset default margin */
+  color: #e6dddd;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.footer__version {
+  margin: 0; /* Reset default margin */
+  color: #ffffff;
+  font-size: 12px;
+}
+
+
+/* ----- Any changes above can be copied to favorite.css, library.css, settings.css -----*/
+/* ----- As they use the same navigation (Side, top, search, game-grid, game-container, footer ----- */
+
+/* -----***** Section 2. *****----- */
+/* -----***** Anything below this line is unique to styles.css *****----- */
+
+/* PART OF THE SINGLE GAME WINDOW*/
+
+.single-sliding-image {
+  width: 25%;
+  height: auto;
+  display: block;
+  margin: auto;
+  margin-top: 5%;
+  border-radius: 8px;
+  box-shadow: -1px 1px 14px 14px rgb(241 244 245 / 21%);
+}
+
+.info-container {
+  margin: 1em 0;
+  font-family: inherit;
+  padding-top: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  white-space: pre-wrap;
+  color: pink;
+}
+
+/* Right side : Displays game content and info */
 .sliding-window {
   display: flex;
   position: fixed;
@@ -319,18 +423,6 @@ body {
 }
 
 
-.download-button,
-.downloading-button {
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #0de22a;
-  color: #fff;
-  border: none;
-  border-radius: 50%; /* Changed to create a circle */
-  cursor: pointer;
-}
-
-
 .progress-bar-container {
   display: inline-block;
   width: 90%;
@@ -347,25 +439,165 @@ body {
   background-color: rgb(208, 136, 226);
 }
 
+
+
+
+
+
+/* Path window styles */
 .pathWindow {
-  display: flex;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40%;
-  background-color: rgba(0, 0, 0, 0.8);
-  overflow-y: auto;
+  width: 80%;
+  max-width: 600px;
+  background-color: rgb(56, 55, 56);
+  border-radius: 15px;
+  padding: 20px;
   z-index: 1000;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
 }
 
-.pathContainer {
-  text-align: center;
-  padding: 20px;
+.pathLabel {
+  display: block;
+  margin-bottom: 10px;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+#pathID {
+  flex: 1;
+  margin-right: 10px; /* Add margin between input and button */
+}
+
+
+/* Button container for OK and Cancel buttons */
+.buttonContainer {
+  display: flex;
+  gap: 10px; /* Add some space between buttons */
+}
+
+/* OK and Cancel Button Styles */
+.PathOkButton,
+.PathCancelButton {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-right: 10px; /* Add margin between buttons */
+  background-color: #d3337e; /* OK button color */
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.PathCancelButton {
+  background-color: #a8a8a8; /* Cancel button color */
+  color: #ffffff;
+}
+.PathOkButton:hover {
+  background-color: #d32978; /* OK button hover color */
+}
+
+/* Hover Styles */
+.PathOkButton:hover,
+.PathCancelButton:hover {
+  background-color: #d32978; /* OK button hover color */
+  background-color: #dcd9d9; /* Cancel button hover color */
+}
+.downloading-button,
+.stop-downloading-button,
+.download-button {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  padding: 10px;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 50%;
+
+}
+
+.downloading-button {
+  background-color: #0004ff;
+}
+.stop-downloading-button {
+  background-color: #cf2020;
+}
+.download-button {
+  background-color: #2374d1;
+}
+.download-button:hover {
+  background-color: #45a049; /* Darker green */
+}
+.downloading-button:hover {
+  background-color: #0004ff;
+}
+.stop-downloading-button:hover {
+  background-color: #cf2020;
+}
+
+
+.pathInputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px; /* Add margin for spacing */
+}
+
+
+/* Thanks to uiverse.io for this :)*/
+.setting-btn {
+  width: auto; /* Let the button size adjust based on content */
+  border-radius: 5px;
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.setting-btn:hover {
+  background-color: rgb(126, 117, 255);
+}
+
+.bar {
+  width: 50%;
+  height: 2px;
+  background-color: rgb(229, 229, 229);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 2px;
+}
+.bar::before {
+  content: "";
+  width: 2px;
+  height: 2px;
+  background-color: rgb(126, 117, 255);
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: all 0.3s;
+  box-shadow: 0px 0px 5px white;
+}
+.bar1::before {
+  transform: translateX(-4px);
+}
+.bar2::before {
+  transform: translateX(4px);
+}
+.setting-btn:hover .bar1::before {
+  transform: translateX(4px);
+}
+.setting-btn:hover .bar2::before {
+  transform: translateX(-4px);
 }
 
 #pathID {
@@ -373,124 +605,23 @@ body {
   padding: 10px;
   margin: 20px;
 }
-
-.pathInputButton {
-  padding: 10px;
-  background-color: #761c7e;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.pathInputButton:hover {
-  background-color: #5a145b;
-}
-
-
-/* Search bar styles */
-.search-icon,
-img {
-  width: 20px;
-  height: 20px;
-}
-.search {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.pathContainer {
   text-align: center;
+  padding: 20px;
 }
+ 
 
-.search__input {
-  font-family: inherit;
-  font-size: inherit;
-  background-color: #f4f2f2;
-  border-color: #d3337e;
-  color: #646464;
-  padding: 0.7rem 1rem;
-  border-radius: 30px;
-  width: 20em;
-  transition: all ease-in-out .5s;
-  margin-right: -2rem;
-}
+                            /* Section 2. */
+/* -----***** Anything below this line is unique to library.html *****----- */
 
-.search__input:hover, .search__input:focus {
-  box-shadow: 0 0 1em #d3337e;
-}
-
-.search__input:focus {
-  outline: none;
-  background-color: #f0eeee;
-}
-
-.search__input::-webkit-input-placeholder {
-  font-weight: 100;
-  color: #ccc;
-}
-
-.search__input:focus + .search__button {
-  background-color: #f0eeee;
-}
-
-.search__button {
-  border: none;
-  background-color: #f4f2f2;
-  margin-top: .1em;
-}
-
-.search__button:hover {
-  cursor: pointer;
-}
-
-.search__icon {
-  height: 1.3em;
-  width: 1.3em;
-  fill: #d3337e;
-}
-
-/* Search results container */
-#search-results {
-  margin-left: 15px;
-
+  /* This is for the checkmark icon in Library*/
+.image-option svg { 
   position: absolute;
-  background-color: #011b4c;
-  border-radius: 15px;
-  padding: 10px;
-  z-index: 999;
-  display: inline-block;
-  top: calc(100% + 5px);
+  top: 0;
   left: 0;
-
+  z-index: 2;
 }
-
-/* Show search results when input is focused */
-.search__input:focus + .form__label + #search-results {
-  display: block;
-}
-
-/* Hide search results when input is not focused */ 
-.search__input:not(:focus) + .form__label + #search-results {
-  display: none;
-}
-
-/* Styling for search results links */
-#search-results a {
-  display: block;
-  color: #fff;
-  text-decoration: none;
-  margin-bottom: 5px;
-}
-
-#search-results a:hover {
-  text-decoration: underline;
-}
-/* End of search bar styles */
-
-
-
-
-
-/* Favorite Games Section */
+  /* Favorite Games Section */
 
 .library-flex {
   padding-left: 10px;
@@ -528,41 +659,7 @@ img {
 .selected-icon {
   background-color: rgba(255, 255, 255, 0.672);
   border-radius: 14px;
-}
-
-/* Game grid */
-.single-sliding-image {
-  width: 25%;
-  height: auto;
-  display: block;
-  margin: auto;
-  margin-top: 5%;
-  border-radius: 8px;
-  box-shadow: -1px 1px 14px 14px rgb(241 244 245 / 21%);
-}
-
-.info-container {
-  margin: 1em 0;
-  font-family: inherit;
-  padding-top: 0.5em;
-  padding-left: 0.5em;
-  padding-right: 0.5em;
-  white-space: pre-wrap;
-  color: pink;
-}
-
-/* Footer styles */
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #01032a;
-  color: #fff;
-  text-align: center;
-  padding: 10px 0;
-}
-  /* PART OF LIBRARY WINDOW */
+} /* PART OF LIBRARY WINDOW */
   .start-button{
     margin-top: 10px;
     padding: 10px;

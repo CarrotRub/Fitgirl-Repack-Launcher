@@ -24,13 +24,6 @@
     overflow: hidden;
     color: white; /* TODO might need to change this as its a lazy way of doing it */
   }
-  
-  /* Container styles */
-  .fitgirlLauncher {
-    display: flex;
-    height: 100vh;
-  }
-  
   .favorites-container::-webkit-scrollbar,
   .sliding-window::-webkit-scrollbar {
     width: 10px;
@@ -50,6 +43,19 @@
     background-color: #7c204b;
     border-radius: 10px;
   }
+  
+  /* Container styles */
+  .fitgirlLauncher {
+    display: flex;
+    height: 100vh;
+  }
+
+
+
+
+
+  
+ 
   
   .sidebar {
     background-color: rgb(0 0 0 / 57%);
@@ -634,6 +640,7 @@ img {
     box-shadow: -1px 1px 14px 14px rgb(241 244 245 / 21%);
   }
   
+
 
 
   /* Favorite Games Section */

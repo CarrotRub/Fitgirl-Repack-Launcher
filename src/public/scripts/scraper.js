@@ -120,22 +120,24 @@ async function scrapingFunc() {
           }
       });
       pics.forEach((pictureElement) => {
-          const srcAttr = pictureElement.getAttribute("src");
-          if (srcAttr) {
-              srcPics.push(srcAttr);
-          }
-      });
+        const srcAttr = pictureElement.getAttribute("src");
+        if (srcAttr && srcAttr.includes("imageban")) {
+            srcPics.push(srcAttr);
+        }
+    });
 
-      for (let i = 0; i < titles.length; i++) {
-          const title = titles[i].textContent.trim();
-          const img = srcPics[i] || '';
-          const desc = pDesc[i] || '';
-          const magnetLink = magnetLinks[i] || '';
+    for (let i = 0; i < titles.length; i++) {
+        const title = titles[i].textContent.trim();
+        const img = srcPics[i] || '';
+        const desc = pDesc[i] || '';
+        const magnetLink = magnetLinks[i] || '';
 
-          const game = new Game(title, img, desc, magnetLink);
-          games.push(game);
-      }
-  }
+        if (img.includes("imageban")) {
+            const game = new Game(title, img, desc, magnetLink);
+            games.push(game);
+        }
+    }
+}
 
   const jsonData = JSON.stringify(games, null, 2);
   fs.writeFileSync(allGamesData, jsonData);

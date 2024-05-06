@@ -397,6 +397,8 @@ body {
   padding-right: 0.5em;
   white-space: pre-wrap;
   color: pink;
+  margin-left: 60px;
+  margin-right: 60px;
 }
 
 /* Right side : Displays game content and info */
@@ -425,7 +427,10 @@ body {
 }
 
 .content-container {
+  margin-top: 75px;
   text-align: center;
+  margin-left: 60px;
+  margin-right: 55px;
 }
 
 .sliding-image {

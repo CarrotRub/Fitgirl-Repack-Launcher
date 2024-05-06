@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 
 
-      async function addSlideComponents(title,link,descC, pathExecutable) {
+      async function addSlideComponents(title, link, descC, pathExecutable) {
         let descsContent = descC;
         let slidingWindow = document.querySelector('.sliding-window');
         slidingWindow.innerHTML = '';
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             let slidingWindow = document.querySelector('.sliding-window');
             slidingWindow.style.transform = slidingWindow.style.transform === 'translateX(100%)' ? 'translateX(0)' : 'translateX(100%)';
             
-        // Close file explorer if open TODO:does not work :(, fix it)
+        // Close file explorer if open TODO:does not work
         let fileExplorer = document.querySelector('.file-explorer');
         if (fileExplorer) {
             fileExplorer.style.display = 'none';

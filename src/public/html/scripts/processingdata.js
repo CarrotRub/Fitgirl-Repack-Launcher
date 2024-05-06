@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     var isDownloading = false;
     var ScrapingUrl = getUrlParameter('url');
 
+    let isUITorrentNameInJSON = false;
+
     /**
      * Stop UI update process. 
      * 
@@ -44,10 +46,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Read the JSON file containing game data
             const gameData = await primaryAPI.readFile('ftgGamesData.json', 'utf-8');
 
-            console.log(gameData)
+            console.log("Game Data: ", gameData)
             
             let scrapedGame = JSON.parse(gameData);
-            console.log(scrapedGame)
+            console.log("Scraped Game: ", scrapedGame);
 
             var game = scrapedGame[0]; // Accessing the first (and presumably only) object in the array
 
@@ -55,7 +57,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             var srcPic = game.img;
             var magnetLink = game.magnetlink[0];
             var desc = game.desc;
-            console.log(title, srcPic, magnetLink, desc);
+            var gameDesc = game.gameDesc;
+            var gameScreenshots = game.gameScreenshots;
+
+
+            console.log(`Processing game:\n ${title} with link \n${srcPic} and magnet link: \n${magnetLink} and description: \n${desc} and game description: \n${gameDesc} and game screenshots: \n${gameScreenshots}`);
             // Create elements to display game information
             const gameContainer = document.querySelector('.game-container');
             gameContainer.innerHTML = '';
@@ -74,9 +80,77 @@ document.addEventListener('DOMContentLoaded', async function() {
             downloadButton.className = 'download-button';
             downloadButton.textContent = 'Download';
        
+            // Create a container for the game information (Genre, Size, etc.)
             const infoContainer = document.createElement('div');
             infoContainer.className = 'single-info-container';
             infoContainer.textContent = desc;
+
+            // Create a container for the game screenshots
+         
+
+// Create a container for the game screenshots
+const screenshotsContainer = document.createElement('div');
+screenshotsContainer.className = 'single-screenshots-container';
+
+// Iterate over each screenshot URL in the array and create an img element for it
+gameScreenshots.forEach(screenshot => {
+    const imgElement = document.createElement('img');
+    imgElement.className = 'screenshot';
+    imgElement.src = screenshot;
+    screenshotsContainer.appendChild(imgElement);
+});
+
+
+            console.log("Game Screenshots: ", screenshotsContainer);
+            console.log("Game Screenshots: ", screenshotsContainer.src);
+
+            // Create a container for the game description
+            const infoContainerGameDesc = document.createElement('div');
+            infoContainerGameDesc.className = 'second-info-container';
+           // infoContainerGameDesc.textContent = gameDesc;
+           infoContainerGameDesc.textContent = "test";
+
+            // Every element in the array will start with a new line for infoContainer
+            //infoContainer.innerHTML = desc.map((desc) => `<p>${desc}</p>`).join('<br>');
+
+
+            // Every element in the array will start with a new line
+            infoContainerGameDesc.innerHTML = gameDesc.map((desc) => `<p>${desc}</p>`).join('<br>');
+
+            // Create headings 
+
+            ///TESTING GROUNDS ///// 
+
+            const spoilerTab = document.createElement('button')
+            spoilerTab.textContent = 'Show Spoiler';
+
+            const hiddenGameDesc = document.createElement('div');
+            hiddenGameDesc.className = 'hidden-game-desc';
+
+            hiddenGameDesc.innerHTML = gameDesc.map((desc) => `<p>${desc}</p>`).join('<br>');
+            hiddenGameDesc.style.display = 'none';
+
+
+
+// Toggle visibility of the hidden content when the spoiler tab is clicked
+spoilerTab.addEventListener('click', function() {
+    if (hiddenGameDesc.style.display === 'none') {
+        hiddenGameDesc.style.display = 'block';
+        spoilerTab.textContent = 'Click to hide Game Description';
+    } else {
+        hiddenGameDesc.style.display = 'none';
+        spoilerTab.textContent = 'Click to reveal Game Description';
+    }
+});
+
+// log 
+console.log("Game Description: ", hiddenGameDesc);
+console.log("Game Description: ", spoilerTab);
+
+            
+
+            
+
 
             imgElement.addEventListener('contextmenu', async function(event) {
                 event.preventDefault();
@@ -109,7 +183,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                         downloadButton.className = 'download-button';
                     } else if (isUITorrentNameInJSON) {
                         downloadButton.textContent = 'Install';
-                        //TODO CANT TEST FOR SOME REASON
                     } else {
                         downloadButton.textContent = 'Download';
                         downloadButton.className = 'download-button';
@@ -156,12 +229,11 @@ document.addEventListener('DOMContentLoaded', async function() {
                 document.body.appendChild(progressContainer); // You can replace document.body with another parent element
                 
 
-                              // Change the text color to pink for the elements inside progressContainer
-
-const pinkTextElements = progressContainer.querySelectorAll('.pink-text');
-pinkTextElements.forEach(element => {
-  element.style.color = 'pink';
-});
+                // Change the text color to pink for the elements inside progressContainer
+                const pinkTextElements = progressContainer.querySelectorAll('.pink-text');
+                pinkTextElements.forEach(element => {
+                element.style.color = 'pink';
+            });
 
 
 
@@ -171,9 +243,13 @@ pinkTextElements.forEach(element => {
             // Append elements to the sliding window
             gameContainer.appendChild(contentContainer);
             contentContainer.appendChild(imgElement);
-             contentContainer.appendChild(downloadButton);
+            contentContainer.appendChild(downloadButton);
+            contentContainer.appendChild(screenshotsContainer)
+                        // Append the spoiler tab and hidden content to the contentContainer
             contentContainer.appendChild(infoContainer);
-    
+            contentContainer.appendChild(spoilerTab); //test
+contentContainer.appendChild(hiddenGameDesc);
+            //contentContainer.appendChild(infoContainerGameDesc);
             contentContainer.appendChild(progressContainer);
 
 
@@ -183,7 +259,7 @@ pinkTextElements.forEach(element => {
                     console.log("should NOT be destroying bbg")
                     console.log(magnetLink)
                     try {
-                        let result = await togglePathWindowAsync(magnetLink, title, srcPic, desc);
+                        let result = await togglePathWindowAsync(magnetLink, title, srcPic, desc, gameDesc, gameScreenshots);
                         if (result === false) {
                             console.log('User canceled the operation.');
                         } else {
@@ -220,7 +296,7 @@ pinkTextElements.forEach(element => {
         // Implement your scraping logic here
         console.log("Scraping page: " + gameUrl);
         await window.scrapeAPI.scrapeDataGame(gameUrl)
-        console.log("is done probably")
+        console.log('Scraping done!');
         await updateSingleGameUI()
     }
 
@@ -245,7 +321,6 @@ pinkTextElements.forEach(element => {
             try {
 
                 sessionStorage.setItem('isDone', data.torrentDone);
-
                 sessionStorage.setItem('downloadSpeed', data.downloadSpeed);
                 sessionStorage.setItem('uploadSpeed', data.uploadSpeed);
                 sessionStorage.setItem('totalSize', data.total);
@@ -272,9 +347,11 @@ pinkTextElements.forEach(element => {
      * @param {string} myTitleGame The title of the game.
      * @param {string} imageGame The image of the game.
      * @param {string} descriptionGame The description of the game.
+     * @param {stirng} gameDesc The game description.
+     * @param {string} gameScreenshots The game screenshots.
      */
 
-    async function checkInstallLib(imageGame, myTitleGame, descriptionGame) {
+    async function checkInstallLib(imageGame, myTitleGame, descriptionGame, gameDesc, gameScreenshots) {
         try {
             const isGameDone = sessionStorage.getItem('isDone');
             myTitleGame = myTitleGame.replace(" [FitGirl Repack]", "");
@@ -311,7 +388,9 @@ pinkTextElements.forEach(element => {
                 infoDownloadedGames[myTitleGame] = {
                     title: myTitleGame,
                     image: imageGame,
-                    description: descriptionGame
+                    description: descriptionGame,
+                    gameDesc: gameDesc,
+                    gameScreenshots: gameScreenshots,
                 };
     
                 const updatedJson = JSON.stringify(gameDoneData, null, 2);
@@ -342,7 +421,7 @@ pinkTextElements.forEach(element => {
      * 
      * I think <3.
      */
-    async function updateDownloadUI(titleGame, imageGame, descriptionGame) {
+    async function updateDownloadUI(titleGame, imageGame, descriptionGame, gameDesc, gameScreenshots) {
         let downloadSpeed = sessionStorage.getItem('downloadSpeed');
         let uploadSpeed = sessionStorage.getItem('uploadSpeed');
         let totalSize = sessionStorage.getItem('totalSize');
@@ -363,7 +442,7 @@ pinkTextElements.forEach(element => {
         document.querySelector('#downloaded').innerHTML = `Downloaded : ${downloadedSize}`;
         document.querySelector('#numPeers').innerHTML = `Peers : ${peers}`;
 
-        checkInstallLib(titleGame, imageGame, descriptionGame)
+        checkInstallLib(titleGame, imageGame, descriptionGame, gameDesc, gameScreenshots);
 
 
 
@@ -529,6 +608,8 @@ pinkTextElements.forEach(element => {
      * @param {string[]} links Array of image links.
      * @param {string[]} magnetLinks Array of magnet links.
      * @param {Object[]} descsPer Array of description objects.
+     * @param {Object[]} gameDescs Array of game description objects.
+     * @param {Object[]} gameScreenshots Array of game screenshots objects.
      */
     function populateImageGrid() {
         console.log("start population")
@@ -649,11 +730,14 @@ pinkTextElements.forEach(element => {
          * @param {string} title The image title.
          * @param {string} magnetlink The magnet link.
          * @param {Object} descC The description Content object.
+         * @param {Object} gameDesc The game description object.
+         * @param {Object} gameScreenshots The game screenshots object.
          */
-        async function addSlideComponents(link, title, magnetlink, descC) {
+        async function addSlideComponents(link, title, magnetlink, descC, gameDesc, gameScreenshots) {
             console.log("HIIIIIIII POOKIE")
             let torrentedMagnet = sessionStorage.getItem('torrentCheckMagnet')
             let descsContent = descC;
+            let gameDescContent = gameDesc;
             let slidingWindow = document.querySelector('.sliding-window');
             slidingWindow.innerHTML = '';
             let downloadButton = document.createElement('button');
@@ -665,10 +749,28 @@ pinkTextElements.forEach(element => {
             imgElement.alt = title;
             imgElement.className = 'sliding-image';
 
-        
+            console.log('>>>>>>>>>>>>>>>>Image link:', link);
+
+            // Create a container for the game title
+            let titleContainer = document.createElement('div');
+            titleContainer.className = 'title-container';
+            titleContainer.textContent = title;
+
+            // Create a container for the game screenshots 
+            let screenshotsContainer = document.createElement('div');
+           // screenshotsContainer.className = 'screenshots-container';
+            screenshotsContainer.textContent = gameScreenshots;
+
+            // Create a container for the game information
             let infoContainer = document.createElement('div');
             infoContainer.className = 'info-container';
             infoContainer.textContent = descsContent;
+
+            // Create a container for the game description
+            let infoContainerGameDesc = document.createElement('div');
+            infoContainerGameDesc.className = 'info-container';
+            infoContainerGameDesc.textContent = gameDescContent;
+
 
             downloadButton.className = 'download-button';
             downloadButton.textContent = 'Download';
@@ -682,12 +784,14 @@ pinkTextElements.forEach(element => {
                     let gameJSON = JSON.parse(slideData);
                     let forCheckTitle = title.trim()
                     try {
-                        console.log(forCheckTitle);
-                        var isUITorrentNameInJSON = gameJSON.games.includes(forCheckTitle);
-                        console.log("isUITorrentNameInJSON:", isUITorrentNameInJSON);
+                        console.log(`Checking for ${forCheckTitle}`);
+                    // Check if gameJSON.games is defined before accessing its properties
+                    isUITorrentNameInJSON = gameJSON.games && gameJSON.games.includes(forCheckTitle); 
+                    console.log("isUITorrentNameInJSON:", isUITorrentNameInJSON);
                         console.log("doe$zao");
                     } catch (error) {
                         console.error("Error parsing JSON:", error);
+                    
                         return;
                     }
 
@@ -699,7 +803,7 @@ pinkTextElements.forEach(element => {
                         downloadButton.className = 'download-button'
                     } else if (isUITorrentNameInJSON) {
                         downloadButton.textContent = 'Install';
-                        //TODO CANT TEST FOR SOME REASN
+
                     } else {
                         downloadButton.textContent = 'Download';
                         downloadButton.className = 'download-button';
@@ -750,10 +854,10 @@ pinkTextElements.forEach(element => {
                 `;
 
                 // Change the text color to pink for the elements inside progressContainer
-const pinkTextElements = progressContainer.querySelectorAll('.pink-text');
-pinkTextElements.forEach(element => {
-  element.style.color = 'pink';
-});
+                const pinkTextElements = progressContainer.querySelectorAll('.pink-text');
+                pinkTextElements.forEach(element => {
+                element.style.color = 'pink';
+            });
        
                 
                 
@@ -761,14 +865,16 @@ pinkTextElements.forEach(element => {
 
             slidingWindow.appendChild(contentContainer);
             contentContainer.appendChild(imgElement);
+            contentContainer.appendChild(titleContainer);
             contentContainer.appendChild(downloadButton);
+            contentContainer.appendChild(screenshotsContainer);
             contentContainer.appendChild(infoContainer);
             contentContainer.appendChild(progressContainer);
 
             const returnSlideArrow = document.querySelector('.return-arrow-sld');
             if (torrentedMagnet === magnetlink) {
                 try {
-                    startUIDownloadUpdate(title, link, descsContent)
+                    startUIDownloadUpdate(title, link, descsContent, gameDescContent)
                 } catch (error) {
                     throw new Error(error)
                 }
@@ -813,6 +919,8 @@ pinkTextElements.forEach(element => {
                 let slidingWindow = document.querySelector('.sliding-window');
                 slidingWindow.style.transform = slidingWindow.style.transform === 'translateX(100%)' ? 'translateX(0)' : 'translateX(100%)';
 
+                console.log('Sliding Game Window Closed');
+
             });
         }
 
@@ -839,8 +947,8 @@ pinkTextElements.forEach(element => {
                 imageOption.className = 'image-option';
                 const imgElement = document.createElement('img');
                 imgElement.src = img;
-                console.log(title);
-                console.log(img);
+                console.log(`Loaded game title: ${title.slice(0, 15)}`);
+               // console.log(img); //todo will clog console
                 imgElement.alt = title;
 
                 // Append image to imageOption
@@ -877,7 +985,8 @@ pinkTextElements.forEach(element => {
 
                 // Add event listener for click
                 imageOption.addEventListener('click', () => {
-                    console.log("Selected image link: " + img);
+                    console.log('Sliding Game Window Opened')
+                    console.log('Clicked on game:', title.trim());
                     toggleSlidingWindow(img, title, magnetlink, desc); 
                     //todo: add screenshots and full description
                 });

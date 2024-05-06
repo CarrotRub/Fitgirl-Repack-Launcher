@@ -426,7 +426,10 @@ body {
 
 .content-container {
   text-align: center;
+  padding: 20px;
+  margin-left: 80px;
 }
+
 
 .sliding-image {
   width: 45%;
@@ -625,3 +628,40 @@ body {
   padding: 20px;
 }
 
+.second-info-container {
+  margin: 1em 0;
+  font-family: inherit;
+  padding-top: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  white-space: pre-wrap;
+  color: pink;
+}
+
+/* CSS styles for spoiler tab and hidden content */
+.hidden-game-desc {
+  display: none;
+  margin-top: 5px;
+}
+
+button.spoiler-tab {
+  background-color: #363636;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  margin-top: 150px;
+  padding: 10px;
+  width: 100%;
+
+}
+
+.single-screenshots-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust 200px to the width of your images */
+  grid-gap: 10px; /* Adjust the gap between images */
+}
+
+.screenshot {
+  max-width: 100%; /* Ensure images don't exceed their container's width */
+  height: auto; /* Maintain aspect ratio */
+  
+}

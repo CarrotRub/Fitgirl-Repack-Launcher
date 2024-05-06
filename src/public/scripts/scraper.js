@@ -9,6 +9,7 @@ const downloadedGamesPath = path.resolve(__dirname, '../../private/library/downl
 const infoDownloadedGamesFilePath = path.resolve(__dirname, '../../private/library/info_downloaded_games.json');
 const locallyInstalledGamesPath = path.resolve(__dirname, '../../private/library/locally_installed_games.json');
 const allGamesData = path.resolve(__dirname, '../../private/temp/games.json')
+
 /* Start of platform detection */
 // Determine if the user is using Windows or Linux and set the executable file extension accordingly
  // Alert the user that this app is not supported on Mac/Linux platforms
@@ -75,15 +76,17 @@ const resetTimestamp = () => {
 };
 
 // Manually reset the timestamp for testing purposes, uncomment the line below and run the script
- //resetTimestamp();
+resetTimestamp();
 
 
 class Game {
-  constructor(title, img, desc, magnetlink) {
+  constructor(title, img, desc, magnetlink, gDesc, gameScreenshots) {
       this.title = title;
       this.img = img;
       this.desc = desc;
       this.magnetlink = magnetlink;
+      this.gDesc = gDesc;
+      this.gameScreenshots = gameScreenshots;
   }
 }
 
@@ -101,8 +104,11 @@ async function scrapingFunc() {
 
       const titles = document.querySelectorAll('.entry-title a');
       const pics = document.querySelectorAll('.alignleft');
+      const gameScreenshots = document.querySelectorAll('p img');
       const description = document.querySelectorAll('.entry-content');
+      const gameDescription = document.querySelectorAll('.su-spoiler-content p ');
       const anchorTags = document.querySelectorAll("a");
+    
 
       const pDesc = [];
       description.forEach((descElement) => {
@@ -112,30 +118,57 @@ async function scrapingFunc() {
           }
       });
 
+    
+      const gDesc = [];
+      gameDescription.forEach((descElement) => {
+        gDesc.push(descElement.textContent.trim());
+      });
+
+  
+
       let magnetLinks = [];
-      let srcPics = [];
+     
       anchorTags.forEach((anchorTag) => {
           const hrefAttr = anchorTag.getAttribute("href");
           if (hrefAttr && hrefAttr.includes("magnet")) {
               magnetLinks.push(hrefAttr);
           }
       });
+      // Get the src attribute of the <img> element and wrap it inside an array
+      let srcPics = [];
       pics.forEach((pictureElement) => {
-        
           const srcAttr = pictureElement.getAttribute("src");
           if (srcAttr && srcAttr.includes("imageban")) {
               srcPics.push(srcAttr);
           }
       });
 
+     // Get the src attribute of the <img> element and wrap it inside an array
+let gamePicsSrc = [];
+gameScreenshots.forEach((gamePic) => {
+    const srcAttr = gamePic.getAttribute("src");
+    // Check if srcAttr exists and if it includes "riotpixels"
+    if (srcAttr && srcAttr.includes("riotpixels")) {
+        gamePicsSrc.push(srcAttr);
+    }
+});
+
+       // Log the extracted descriptions for debugging
+    console.log("Description from entry-summary:", pDesc);
+    console.log("Description from su-spoiler-content:", gDesc);
+    console.log("Magnet links:", magnetLinks);
+    console.log("Game pics:", gamePicsSrc);
+    
       for (let i = 0; i < titles.length; i++) {
           const title = titles[i].textContent.trim();
           const img = srcPics[i] || '';
           const desc = pDesc[i] || '';
+          const gameDesc = gDesc[i] || '';
+          const gameScreenshots = gamePicsSrc[i] || '';
           const magnetLink = magnetLinks[i] || '';
 
           if (img.includes("imageban")) {
-              const game = new Game(title, img, desc, magnetLink);
+              const game = new Game(title, img, desc, magnetLink, gameDesc, gameScreenshots);
               games.push(game);
           }
       }

@@ -1,11 +1,12 @@
-/* Resetting default styles */
+/* Global styles */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Global styles */
+
 :root {
   --primary-color: rgba(22, 21, 22, 1);
   --secondary-color: rgba(0, 0, 0, 1);
@@ -29,6 +30,588 @@ body {
   display: flex;
   height: 100vh;
 }
+
+/* end of global styles */
+
+/* ----- Any changes below up to Section 2. can be copied to favorite.css, library.css, settings.css -----*/
+/* ----- As they use the same navigation (Side, top, search, game-grid, game-container, footer ----- */
+
+
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  background-color: #151515;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 20px;
+  z-index: 2;
+  border-right: #242424 1px solid;
+}
+
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;;
+}
+
+.menu-item:hover {
+  background-color: #555;
+}
+
+.menu-icon {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.logo {
+  width: 75px;
+  height: 75px;
+  margin-bottom: 20px;
+  border: 1px solid #fff;
+}
+
+
+.logo-container {
+  display: flex;
+  align-items: none;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+
+
+/* Top bar styles */
+.horibar {
+  width: 100%; /* Set a fixed width */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+  background-color: #151515;
+  border-bottom: 1px solid #242424;
+  max-height: 70px; /* Set a maximum height */
+  padding: 15px;
+}
+
+.horibar__search {
+  margin-left: auto; /* Push the search element to the right */
+}
+/* End of top bar styles */
+
+/* Three guys styles (Menu items) */
+.threeGuys > * {
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+.threeGuys li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.threeGuys h4 {
+  margin-left: 10px;
+}
+
+  
+
+
+.image-option {
+  grid-area: auto / span 1 / auto / span 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  text-align: center;
+  margin-right: 20px;
+  border-radius: 10px;
+  border: 2px solid pink;
+  overflow: hidden; /* added overflow property to ensure content doesn't overflow */
+  transition: background-color 0.3s;
+}
+
+
+.image-option img {
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: -1px 1px 10px 8px rgb(0 0 0 / 57%);
+  transition: transform 0.3s ease-out;
+}
+
+.image-option p {
+  margin-top: 5px;
+}
+.image-option:hover {
+  background-color: rgba(211, 51, 126, 0.548);
+}
+
+.image-option:hover img {
+  transform: scale(1.2);
+
+}
+
+
+
+.game-grid {
+  padding: 15px;
+  grid-column: 2;
+  display: grid;
+  gap: 2%;
+  grid-template-columns: repeat(auto-fill, minmax(15%, 1fr));
+  justify-items: start;
+  z-index: 0;
+  margin-bottom: 20em;
+  margin-left: 4em;
+  margin-top: 4em;
+}
+
+/* Container outside of game-grid styles */
+.game-container {
+  padding-top: 20px;
+  padding-left: 120px;
+  flex: 1;
+  z-index: 1;
+  width: 100%;
+  list-style: none;
+  overflow: hidden;
+  height: 100%;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  overflow-y: scroll;
+  position: absolute;
+}
+
+.game-container-title {
+  position: absolute; 
+  top: 13%; 
+  left: 8%; 
+  color: white;
+  padding: 10px 20px;
+  z-index: 1000; 
+  visibility: hidden;
+}
+
+
+
+.color-blur-overlay,
+.blur-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  filter: saturate(3);
+  background-size: cover;
+  background-position: center;
+  filter: blur(0);
+  z-index: -1;
+}
+
+/* Search bar styles */
+.img {
+  width: 20px;
+  height: 20px;
+}
+ .search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+} 
+
+/* Search bar styles */
+.search__input {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #1c1c1c;
+  border: none;
+  color: white;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  width: 20em;
+  transition: all ease-in-out .5s;
+}
+
+.search__input:hover,
+ .search__input:focus {
+  box-shadow: 0 0 0.5em #d3337e;
+}
+
+.search__input:focus {
+  outline: none;
+  background-color: #1c1c1c;
+  color: #ffffff;}
+
+.search__input::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #ccc;
+}
+
+
+/* Search results container */
+#search-results {
+  flex-direction: column;
+  background-color: #000000;
+  border-radius: 15px;
+  border: #242424 2px solid;
+  padding: 10px;
+  z-index: 999;
+  display: none; /* Initially hidden */
+  position: absolute;
+  right: 1em;
+  margin-top: 5em;
+  width: max-content;
+  max-width: 80vw; /* Adjust max width as needed */
+  overflow: auto; /* Enable scrolling if needed */
+}
+
+
+/* Show search results when input is focused */
+.search__input:focus + .form__label + #search-results {
+  display: block;
+
+}
+
+/* Hide search results when input is not focused */ 
+.search__input:not(:focus) + .form__label + #search-results {
+  display: none;
+}
+
+
+/* Style for the search input */
+.form__field {
+  border: 1px solid #151515;
+  border-radius: 5px;
+  padding: 8px 12px;
+  margin-right: 10px;
+  font-family: inherit;
+  font-size: inherit;
+  background-color: #1c1c1c;
+  color: #242424;
+  padding: 0.7rem 1rem;
+  border-radius: 10px;
+  width: 20em;
+  transition: all ease-in-out .5s;
+}
+
+
+/* Styling for search results links */
+#search-results a {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  margin-bottom: 5px;
+}
+
+#search-results a:hover {
+  text-decoration: underline;
+}
+/* End of search bar styles */
+
+/* Footer styles */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #151515;
+  color: #fff;
+  padding: 10px 20px; /* Adjust padding as needed */
+  border-top: 1px solid #242424;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer p {
+  margin: 0; /* Reset default margin */
+  color: #ffffff;
+  font-size: 12px;
+}
+
+/* Horibar title styles */
+.footer__title {
+  margin: 0; /* Reset default margin */
+  color: #e6dddd;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.footer__version {
+  margin: 0; /* Reset default margin */
+  color: #ffffff;
+  font-size: 12px;
+}
+
+
+/* ----- Any changes above can be copied to favorite.css, library.css, settings.css -----*/
+/* ----- As they use the same navigation (Side, top, search, game-grid, game-container, footer ----- */
+
+/* -----***** Section 2. *****----- */
+/* -----***** Anything below this line is unique to styles.css *****----- */
+
+/* PART OF THE SINGLE GAME WINDOW*/
+
+.single-sliding-image {
+  width: 25%;
+  height: auto;
+  display: block;
+  margin: auto;
+  margin-top: 5%;
+  border-radius: 8px;
+  box-shadow: -1px 1px 14px 14px rgb(241 244 245 / 21%);
+}
+
+.info-container {
+  margin: 1em 0;
+  font-family: inherit;
+  padding-top: 0.5em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  white-space: pre-wrap;
+  color: pink;
+}
+
+/* Right side : Displays game content and info */
+.sliding-window {
+  display: flex;
+  position: fixed;
+  font-family: satoshiFontMedium;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40%;
+  background-color: rgba(0, 0, 0, 0.8);
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.5s ease;
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.return-arrow-sld {
+  position: absolute;
+  cursor: pointer;
+  top: 10px;
+  left: 10px;
+}
+
+.content-container {
+  text-align: center;
+}
+
+.sliding-image {
+  width: 45%;
+  height: auto;
+  display: block;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: -1px 1px 14px 14px rgb(241 244 245 / 21%);
+}
+
+
+.progress-bar-container {
+  display: inline-block;
+  width: 90%;
+  height: 10px;
+  border-radius: 2px;
+  background-color: #761c7e;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 5px;
+  background-color: rgb(208, 136, 226);
+}
+
+
+
+
+
+
+/* Path window styles */
+.pathWindow {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 600px;
+  background-color: rgb(56, 55, 56);
+  border-radius: 15px;
+  padding: 20px;
+  z-index: 1000;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center items horizontally */
+}
+
+.pathLabel {
+  display: block;
+  margin-bottom: 10px;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+#pathID {
+  flex: 1;
+  margin-right: 10px; /* Add margin between input and button */
+}
+
+
+/* Button container for OK and Cancel buttons */
+.buttonContainer {
+  display: flex;
+  gap: 10px; /* Add some space between buttons */
+}
+
+/* OK and Cancel Button Styles */
+.PathOkButton,
+.PathCancelButton {
+  display: inline-block;
+  padding: 10px 20px;
+  margin-right: 10px; /* Add margin between buttons */
+  background-color: #d3337e; /* OK button color */
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.PathCancelButton {
+  background-color: #a8a8a8; /* Cancel button color */
+  color: #ffffff;
+}
+.PathOkButton:hover {
+  background-color: #d32978; /* OK button hover color */
+}
+
+/* Hover Styles */
+.PathOkButton:hover,
+.PathCancelButton:hover {
+  background-color: #d32978; /* OK button hover color */
+  background-color: #dcd9d9; /* Cancel button hover color */
+}
+.downloading-button,
+.stop-downloading-button,
+.download-button {
+  margin-top: 30px;
+  margin-bottom: 15px;
+  padding: 10px;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 50%;
+
+}
+
+.downloading-button {
+  background-color: #0004ff;
+}
+.stop-downloading-button {
+  background-color: #cf2020;
+}
+.download-button {
+  background-color: #2374d1;
+}
+.download-button:hover {
+  background-color: #45a049; /* Darker green */
+}
+.downloading-button:hover {
+  background-color: #0004ff;
+}
+.stop-downloading-button:hover {
+  background-color: #cf2020;
+}
+
+
+.pathInputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px; /* Add margin for spacing */
+}
+
+
+/* Thanks to uiverse.io for this :)*/
+.setting-btn {
+  width: auto; /* Let the button size adjust based on content */
+  border-radius: 5px;
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.setting-btn:hover {
+  background-color: rgb(126, 117, 255);
+}
+
+.bar {
+  width: 50%;
+  height: 2px;
+  background-color: rgb(229, 229, 229);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 2px;
+}
+.bar::before {
+  content: "";
+  width: 2px;
+  height: 2px;
+  background-color: rgb(126, 117, 255);
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: all 0.3s;
+  box-shadow: 0px 0px 5px white;
+}
+.bar1::before {
+  transform: translateX(-4px);
+}
+.bar2::before {
+  transform: translateX(4px);
+}
+.setting-btn:hover .bar1::before {
+  transform: translateX(4px);
+}
+.setting-btn:hover .bar2::before {
+  transform: translateX(-4px);
+}
+
+#pathID {
+  width: 80%;
+  padding: 10px;
+  margin: 20px;
+}
+.pathContainer {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Section 2 */
+/* These are the styles for the settings page */
 
 .settings-container::-webkit-scrollbar,
 .sliding-window::-webkit-scrollbar {
@@ -70,171 +653,20 @@ body {
   background-color: #7c204b;
   border-radius: 10px;
 }
-
-.sidebar {
-  background-color: rgb(0 0 0 / 57%);
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  height: 100%;
-  list-style: none;
-  width: 120px;
-  margin-left: 0;
-  padding: 20px 0;
-  position: relative;
-  z-index: 2;
+/* Button styles */
+.update-button {
+background-color: var(--accent-color);
+color: var(--text-color);
+border: none;
+padding: 8px 16px;
+margin-top: 8px;
+border-radius: 5px;
+cursor: pointer;
 }
 
-
-
-
-.sidebar li:hover {
-  cursor: pointer;
+.update-button:hover {
+background-color: #b02a5d;
 }
-
-.settingsPage {
-  display: flex;
-  justify-content: center; /* Horizontally center the content */
-  align-items: center; /* Vertically center the content */
-  margin-top: auto;
-  border-radius: 20px;
-  background-color: rgb(20, 20, 20);
-  padding: 10px;
-}
-
-.logo-container {
-  display: flex;
-  align-items: none;
-  flex-direction: column;
-  box-sizing: border-box;
-  padding-top: 7%;
-}
-
-.logo {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-bottom: 20px;
-  border: 2px solid #d3337e;
-}
-
-.logo img {
-  width: 100%;
-  height: 100%;
-}
-
-.sidebar ul {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 20px 0;
-  margin: 0;
-}
-
-.sidebar li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.sidebar a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.threeGuys,
-.horibar {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  justify-content: flex-start;
-  z-index: 2;
-}
-
-.threeGuys {
-  flex-direction: column;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 70%;
-  background-color: rgb(20, 20, 20);
-  box-shadow: 2px 0 5px rgba(27, 27, 27, 0.1);
-  border-radius: 30px;
-  
-}
-
-.threeGuys > * {
-  margin-bottom: 1em;
-  margin-top: 1em;
-}
-
- .horibar {
-    height: 15%;
-    background-color: transparent; 
-     backdrop-filter: blur(0px);
-  }
-  
-
-.horibar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.horibar li {
-  padding: 10px;
-  cursor: pointer;
-}
-
-.horibar a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.search-icon,
-img {
-  width: 20px;
-  height: 20px;
-}
-
-/* Image inside of the grid */
-.image-option {
-  border: 2px solid pink;
-  text-align: center;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.image-option:hover {
-  background-color: rgba(211, 51, 126, 0.548);
-}
-
-.image-option:hover img {
-  transform: scale(1.2);
-}
-
-.game-grid {
-  padding: 15px;
-  grid-column: 2;
-  display: grid;
-  gap: 2%;
-  grid-template-columns: repeat(auto-fill, minmax(15%, 1fr));
-  justify-items: start;
-  z-index: 0;
-  margin-bottom: 20em;
-}
-
-
-
-
-
 
 /* PART OF THE SINGLE GAME WINDOW ONLY !*/
 
@@ -281,36 +713,4 @@ position: absolute;
 
 .list-settings {
 list-style: none;
-}
-
-/* Highlight menu button depending on selection */
-.sidebar .selected-icon {
-background-color: white;
-}
-
-/* Button styles */
-.update-button {
-background-color: var(--accent-color);
-color: var(--text-color);
-border: none;
-padding: 8px 16px;
-margin-top: 8px;
-border-radius: 5px;
-cursor: pointer;
-}
-
-.update-button:hover {
-background-color: #b02a5d;
-}
-
-/* Footer styles */
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #01032a;
-  color: #fff;
-  text-align: center;
-  padding: 10px 0;
 }

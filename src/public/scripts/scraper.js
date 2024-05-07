@@ -75,7 +75,7 @@ const resetTimestamp = () => {
 };
 
 // Manually reset the timestamp for testing purposes, uncomment the line below and run the script
-// resetTimestamp();
+ //resetTimestamp();
 
 
 class Game {
@@ -121,6 +121,7 @@ async function scrapingFunc() {
           }
       });
       pics.forEach((pictureElement) => {
+        
           const srcAttr = pictureElement.getAttribute("src");
           if (srcAttr && srcAttr.includes("imageban")) {
               srcPics.push(srcAttr);

@@ -235,8 +235,8 @@ body {
   font-family: inherit;
   font-size: inherit;
   background-color: #1c1c1c;
-  border-color: #151515;
-  color: #151515;
+  border: none;
+  color: white;
   padding: 0.7rem 1rem;
   border-radius: 10px;
   width: 20em;

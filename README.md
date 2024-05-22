@@ -2,7 +2,7 @@
 
 ![FitGirl Launcher Logo](src/private/icons/fitgirl_icon.png)
 
-FitGirl Launcher is an Electron-based application built using vanilla JavaScript. It provides a platform to download and manage games from FitGirl Repacks.
+FitGirl Launcher is an Electron-based application built using vanilla JavaScript. It provides a platform to **torrent** and manage games from FitGirl Repacks.
 
 ## Discord 
 

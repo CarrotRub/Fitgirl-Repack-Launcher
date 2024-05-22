@@ -90,7 +90,7 @@ Here are some screenshots of the FitGirl Launcher App:
 
 ## How It Works
 
-FitGirl Launcher utilizes web scraping with Puppeteer to extract game information and download links from the FitGirl Repacks website. Since FitGirl does not provide an API, Puppeteer is used to automate the process of fetching data from the website.
+FitGirl Launcher extract game information and download links from the FitGirl Repacks website. Since FitGirl does not provide an API, requests are used to automate the process of fetching data from the website.
 
 ## Contributing
 

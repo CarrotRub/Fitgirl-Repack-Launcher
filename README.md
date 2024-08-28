@@ -1,3 +1,14 @@
+
+<div style="background-color: #FFEB3B; padding: 10px; border-radius: 5px;">
+  <h2 align="center">🚨 THIS APP IS DEPRECATED 🚨</h2>
+  <p align="center">
+    Go check out <a href="https://github.com/CarrotRub/Fit-Launcher"><strong>FIT-LAUNCHER</strong></a> on my GitHub!<br>
+    It's better, faster, and leaner! 🚀🔥
+  </p>
+</div>
+
+
+
 # FitGirl Launcher App (BETA)
 
 ![FitGirl Launcher Logo](src/private/icons/fitgirl_icon.png)
